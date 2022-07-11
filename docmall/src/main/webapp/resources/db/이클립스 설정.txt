@@ -1,0 +1,38 @@
+이클립스 설정
+이클립스 플러그인 
+https://download.springsource.com/release/TOOLS/update/3.9.15.RELEASE/e4.18/
+설치 help - insetall  name: sts  url : 넣고 설치
+1.워크스페이스 레거시프로젝트 생성
+2.인코딩 설정, 서버 설정
+3.롬복설치
+4.메이븐 업데이트
+5.window - perspective - open perspective - other - sping으로 설정
+6.뼈대 생성(src/main/java)에 controller, mapper, service, doamin,  aop,exception 패키지 생성
+7.pom.xml 설정 (ex05에 있는걸로 복붙 10번째줄 부터)
+8.root-context설정 (ex05참고 namespace사용가능)
+  - hikariconfig 부터 복붙 하고 base-packeg수정
+  -DB접속 계정,비번 변경
+9.servlet-context.xml (ex05복붙 후 base-packege수정)
+10.web.xml (ex05복붙)
+11. (src/main/resources)에 com폴더생성 com안에 docmall(프로젝트이름)폴더 생성 그 안에 mapper폴더 생성
+   -(src/main/java)에 생성한 구조에 맞게
+12.(src/main/resources)안에 있는 log4j.xml log4jdbc.log4j2.properties,jogback.xml 파일 세개 복붙
+13.log4j.xml (ex05에있는거 복붙)후 logger name 수정
+
+14.부트스트랩 템플릿 적용
+AdminLTE 2.17 다운로드후 bower_components, dist, plugins, starter.html 폴더와 파일을 src/main/webapp/resources 폴더에 넣는다
+
+
+
+
+
+
+
+-이클립스와 깃허브 연동
+
+1.이클립스의 
+2.프로젝트 마우스 오른쪽 - team - share project > repository create
+3.window - perspective - other - git
+4.프로젝트 마우스 오른쪽 - team - add index(로컬 레포지토리에 등록)
+5.프로젝트 마우스 오른쪽 - team -commit(깃허브의 원격레포지토리에 반영 준비)
+6.git repositories에서  git staging 탭에서 unstaged changes +누르고 commit and push

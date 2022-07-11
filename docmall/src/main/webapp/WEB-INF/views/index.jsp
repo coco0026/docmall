@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
-    <title>DocMall Shopping</title>
+    <title>DocMall Shop</title>
 
 <meta name="theme-color" content="#563d7c">
 

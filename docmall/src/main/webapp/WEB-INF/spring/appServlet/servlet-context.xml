@@ -22,6 +22,7 @@
 	<resources mapping="/plugins/**" location="/resources/plugins/" />
 	
 	<resources mapping="/css/**" location="/resources/css/" />
+	<resources mapping="/js/**" location="/resources/js/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -32,7 +33,7 @@
 	<!-- 프로젝트 생성과함께 자동추가 -->
 	<context:component-scan base-package="com.docmall.controller" />
 	
-	<context:component-scan base-package="com.demo.exception" />
+	<context:component-scan base-package="com.docmall.exception" />
 	
 	<!-- 파일업로드 bean설정. id="multipartResolver" 예약어-->
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></beans:bean>
