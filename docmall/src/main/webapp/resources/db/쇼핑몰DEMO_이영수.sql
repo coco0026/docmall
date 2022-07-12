@@ -229,14 +229,8 @@ CREATE TABLE MANAGER_TBL (
 
 
 
-
-
-
-
-
-
 --회원 테이블, 회원상세 테이블 생성 프로시저
-CREATE OR REPLACE PROCEDURE P_MEMBER_ADD (
+create or replace PROCEDURE P_MEMBER_ADD (
     P_MBR_ID           IN MEMBER_TBL.MBR_ID%TYPE,
     P_MBR_NM           IN MEMBER_TBL.MBR_NM%TYPE,
     P_MBR_PW           IN MEMBER_TBL.MBR_PW%TYPE,
@@ -256,18 +250,22 @@ CREATE OR REPLACE PROCEDURE P_MEMBER_ADD (
     -- Ver      Date              Author
     -- 1.0      2022/07/12        이영수
     -------------------------------------
-
-    INSERT_ERR EXCEPTION
-    V_MBR_POINT_NY       NUMBER     := 0;       -- 적립금
-    V_MBR_GRADE_CODE     NUMBER(4)  := 1001;    -- 일반등급
-    V_MBR_ACCUMULATE_MY  NUMBER(10) := 0;       -- 회원 주문 누적 금액
     
-    DBMS_OUTPUT.PUT_LINE('============================================START============================================');
-      P_ERRCODE := 'N'; -- 에러코드값 디폴트N
-      P_ERRMSG := 'SUCCESS'; -- 에러메시지 값 디폴트 SUCCESS
-   
-   
+    INSERT_ERR EXCEPTION;
+
+    V_MBR_POINT_NY       NUMBER     := 0;       -- 적립금
+    V_MBR_GRADE_CODE     NUMBER     := 1001;    -- 일반등급
+    V_MBR_ACCUMULATE_MY  NUMBER     := 0;       -- 회원 주문 누적 금액
+
+    BEGIN
+
+
        BEGIN -- 단일트랜잭션
+            DBMS_OUTPUT.PUT_LINE('============================================START============================================');
+            P_ERRCODE := 'N'; -- 에러코드값 디폴트N
+            P_ERRMSG := 'SUCCESS'; --   에러메시지 값 디폴트 SUCCESS
+
+       
             -- 회원테이블 INSERT
             INSERT INTO MEMBER_TBL (
                 MBR_ID,           
@@ -295,7 +293,7 @@ CREATE OR REPLACE PROCEDURE P_MEMBER_ADD (
                 SYSDATE,
                 SYSDATE
             );
-            
+
             -- 회원등급테이블 INSERT
             INSERT INTO MEMBER_DETAIL_TBL (
                 MBR_ID,              
@@ -311,14 +309,14 @@ CREATE OR REPLACE PROCEDURE P_MEMBER_ADD (
 
             COMMIT; -- 2개테이블 모두 입력이 되면 COMMIT처리함
        EXCEPTION -- 예외발생시 EXCEPTION 
---        WHEN NO_DATE_FOUND THEN --SELECT 결과 없을때
---            RAISE INSERT_ERR;
---            P_ERRCODE := 'Y';
+        WHEN NO_DATA_FOUND THEN --SELECT 결과 없을때
+            RAISE INSERT_ERR;
+            P_ERRCODE := 'Y';
         WHEN OTHERS THEN
             RAISE INSERT_ERR;
             P_ERRCODE := 'Y';
        END;
-       
+    DBMS_OUTPUT.PUT_LINE('============================================END============================================');
    EXCEPTION
      WHEN INSERT_ERR THEN
        ROLLBACK;
@@ -333,21 +331,20 @@ CREATE OR REPLACE PROCEDURE P_MEMBER_ADD (
 END P_MEMBER_ADD;
 
 
-
-EXEC P_MEMBER_ADD( 
-    #{MBR_ID},           
-    #{MBR_NM},          
-    #{MBR_PW},           
-    #{MBR_ZIP},          
-    #{MBR_ADDR},         
-    #{MBR_DADDR},        
-    #{MBR_TELNO},        
-    #{MBR_EML_ADDR},    
-    #{MBR_EML_ADDR_YN},
-    #{P_ERRCODE}
-    #{P_ERRMSG}
-);
-
+call P_MEMBER_ADD( 
+        #{mbrId},           
+        #{mbrName},          
+        #{mbrPwd},           
+        #{mbrZipCode},          
+        #{mbrAddr1},           
+        #{mbrAddr2},       
+        #{mbrCTEL},      
+        #{mbrMail},      
+        #{mbrAddrYn},  
+        #{errCode, mode=OUT, jdbcType=VARCHAR},
+		#{errMsg, mode=OUT, jdbcType=VARCHAR}
+		)}
+    );
 
 
 
