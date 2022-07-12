@@ -26,4 +26,8 @@ public class MemberVO {
 	private Long mbr_grade_code; //회원등급
 	private int mbr_accumulate_my; //누적금액
 	
+	//프로시저 에러 OUT변수
+	private String p_errcode; //에러코드
+	private String p_errmsg;  //에러명
+	
 }

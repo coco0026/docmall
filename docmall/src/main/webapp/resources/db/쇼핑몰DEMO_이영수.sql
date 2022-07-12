@@ -1,6 +1,6 @@
 /*
 작성자 : 이영수
-편집일 : 2022-07-11
+편집일 : 2022-07-12
 프로젝트명 : 쇼핑몰(공통)
 */
 
@@ -40,116 +40,6 @@ CREATE TABLE MEMBER_DETAIL_TBL (
     MBR_GRADE_CODE      number                  DEFAULT 1001 NOT NULL, -- 1001 : 일반회원3% , 1002 : 실버5% , 1003 : 골드7% , 1004 다이아10%
     MBR_ACCUMULATE_MY   number                  DEFAULT 0 NOT NULL -- 회원 주문 누적 금액  할인율 적용은 컬럼을 생성해서 관리자가 등급별 할인율을 변경가능하게 할지, 그냥 자바단에서 처리할지 고민중
 );
-
-
-
-
-
-
-
---회원테이블,상세테이블 insert 프로시저
-CREATE OR REPLACE PROCEDURE P_MEMBER_ADD (
-    P_MBR_ID           IN MEMBER_TBL.MBR_ID%TYPE,
-    P_MBR_NM           IN MEMBER_TBL.MBR_NM%TYPE,
-    P_MBR_PW           IN MEMBER_TBL.MBR_PW%TYPE,
-    P_MBR_ZIP          IN MEMBER_TBL.MBR_ZIP%TYPE,
-    P_MBR_ADDR         IN MEMBER_TBL.MBR_ADDR%TYPE,
-    P_MBR_DADDR        IN MEMBER_TBL.MBR_DADDR%TYPE,
-    P_MBR_TELNO        IN MEMBER_TBL.MBR_TELNO%TYPE,
-    P_MBR_EML_ADDR     IN MEMBER_TBL.MBR_EML_ADDR%TYPE,
-    P_MBR_EML_ADDR_YN  IN MEMBER_TBL.MBR_EML_ADDR_YN%TYPE,
-    P_ERRCODE          OUT VARCHAR2,
-    P_ERRMSG           OUT VARCHAR2
-    --MBR_REG_DATE        
-    --MBR_UPDATE_DATE     
-    --MBR_CNTN_DATE       
-) IS
-
-    INSERT_ERR EXCEPTION
-    V_MBR_POINT_NY       NUMBER     := 0;       -- 적립금
-    V_MBR_GRADE_CODE     NUMBER(4)  := 1001;    -- 일반등급
-    V_MBR_ACCUMULATE_MY  NUMBER(10) := 0;       -- 회원 주문 누적 금액
-    
-    DBMS_OUTPUT.PUT_LINE('============================================START============================================');
-      P_ERRCODE := 'N'; -- 에러코드값 디폴트N
-      P_ERRMSG := 'SUCCESS'; -- 에러메시지 값 디폴트 SUCCESS
-   
-   
-       BEGIN -- 단일트랜잭션
-            -- 회원테이블 INSERT
-            INSERT INTO MEMBER_TBL (
-                MBR_ID,           
-                MBR_NM,          
-                MBR_PW,           
-                MBR_ZIP,          
-                MBR_ADDR,         
-                MBR_DADDR,        
-                MBR_TELNO,        
-                MBR_EML_ADDR,    
-                MBR_EML_ADDR_YN,
-                MBR_REG_DATE,
-                MBR_UPDATE_DATE
-                --MBR_CNTN_DATE      
-            ) VALUES (
-                P_MBR_ID,           
-                P_MBR_NM,          
-                P_MBR_PW,           
-                P_MBR_ZIP,          
-                P_MBR_ADDR,         
-                P_MBR_DADDR,        
-                P_MBR_TELNO,        
-                P_MBR_EML_ADDR,    
-                P_MBR_EML_ADDR_YN,
-                SYSDATE,
-                SYSDATE
-            );
-            
-            -- 회원등급테이블 INSERT
-            INSERT INTO MEMBER_TBL (
-                MBR_ID,              
-                MBR_POINT_NY,        
-                MBR_GRADE_CODE,      
-                MBR_ACCUMULATE_MY   
-            ) VALUES (
-                P_MBR_ID,
-                V_MBR_POINT_NY, -- 적립금
-                V_MBR_GRADE_CODE,-- 1001 : 일반회원3% , 1002 : 실버5% , 1003 : 골드7% , 1004 다이아10%
-                V_MBR_ACCUMULATE_MY -- 회원 주문 누적 금액  할인율 적용은 컬럼을 생성해서 관리자가 등급별 할인율을 변경가능하게 할지, 그냥 자바단에서 처리할지 고민중
-            );
-
-            COMMIT; -- 2개테이블 모두 입력이 되면 COMMIT처리함
-       EXCEPTION -- 예외발생시 EXCEPTION 
-        WHEN NO_DATE_FOUND THEN
-            RAISE INSERT_ERR;
-            
-            P_ERRCODE := 'Y';
-        WHEN OTHERS THEN
-            RAISE INSERT_ERR;
-            
-            P_ERRCODE := 'Y';
-       END;
-       
-   EXCEPTION
-     WHEN INSERT_ERR THEN
-       ROLLBACK;
-       DBMS_OUTPUT.PUT_LINE('============================================START============================================');
-      --P_ERRCODE := 'Y'; -- 에러코드값 디폴트N
-      P_ERRMSG := P_ERRMSG  := '회원가입정보 입력 오류 발생' || SQLCODE || SUBSTR( SQLERRM, 1, 200 );
-       RETURN;
-     WHEN OTHERS THEN
-       --P_ERRCODE := 'Y'; -- 에러코드값 디폴트N
-      P_ERRMSG := P_ERRMSG  := '그 외 오류 발생' || SQLCODE || SUBSTR( SQLERRM, 1, 200 );
-       RETURN;
-END P_MEMBER_ADD;
-
-
-
-
-
-
-
-
-
 
 
 --공통 코드 테이블
@@ -335,6 +225,129 @@ CREATE TABLE MANAGER_TBL (
     MNGR_NM             VARCHAR2(30)            NOT NULL, --관리자
     MNGR_CNTN_DATE      DATE                    NOT NULL -- 최근 접속시간
 );
+
+
+
+
+
+
+
+
+
+
+--회원 테이블, 회원상세 테이블 생성 프로시저
+CREATE OR REPLACE PROCEDURE P_MEMBER_ADD (
+    P_MBR_ID           IN MEMBER_TBL.MBR_ID%TYPE,
+    P_MBR_NM           IN MEMBER_TBL.MBR_NM%TYPE,
+    P_MBR_PW           IN MEMBER_TBL.MBR_PW%TYPE,
+    P_MBR_ZIP          IN MEMBER_TBL.MBR_ZIP%TYPE,
+    P_MBR_ADDR         IN MEMBER_TBL.MBR_ADDR%TYPE,
+    P_MBR_DADDR        IN MEMBER_TBL.MBR_DADDR%TYPE,
+    P_MBR_TELNO        IN MEMBER_TBL.MBR_TELNO%TYPE,
+    P_MBR_EML_ADDR     IN MEMBER_TBL.MBR_EML_ADDR%TYPE,
+    P_MBR_EML_ADDR_YN  IN MEMBER_TBL.MBR_EML_ADDR_YN%TYPE,
+    P_ERRCODE          OUT VARCHAR2,
+    P_ERRMSG           OUT VARCHAR2
+    --MBR_REG_DATE        
+    --MBR_UPDATE_DATE     
+    --MBR_CNTN_DATE       
+) IS
+    -------------------------------------
+    -- Ver      Date              Author
+    -- 1.0      2022/07/12        이영수
+    -------------------------------------
+
+    INSERT_ERR EXCEPTION
+    V_MBR_POINT_NY       NUMBER     := 0;       -- 적립금
+    V_MBR_GRADE_CODE     NUMBER(4)  := 1001;    -- 일반등급
+    V_MBR_ACCUMULATE_MY  NUMBER(10) := 0;       -- 회원 주문 누적 금액
+    
+    DBMS_OUTPUT.PUT_LINE('============================================START============================================');
+      P_ERRCODE := 'N'; -- 에러코드값 디폴트N
+      P_ERRMSG := 'SUCCESS'; -- 에러메시지 값 디폴트 SUCCESS
+   
+   
+       BEGIN -- 단일트랜잭션
+            -- 회원테이블 INSERT
+            INSERT INTO MEMBER_TBL (
+                MBR_ID,           
+                MBR_NM,          
+                MBR_PW,           
+                MBR_ZIP,          
+                MBR_ADDR,         
+                MBR_DADDR,        
+                MBR_TELNO,        
+                MBR_EML_ADDR,    
+                MBR_EML_ADDR_YN,
+                MBR_REG_DATE,
+                MBR_UPDATE_DATE
+                --MBR_CNTN_DATE      
+            ) VALUES (
+                P_MBR_ID,           
+                P_MBR_NM,          
+                P_MBR_PW,           
+                P_MBR_ZIP,          
+                P_MBR_ADDR,         
+                P_MBR_DADDR,        
+                P_MBR_TELNO,        
+                P_MBR_EML_ADDR,    
+                P_MBR_EML_ADDR_YN,
+                SYSDATE,
+                SYSDATE
+            );
+            
+            -- 회원등급테이블 INSERT
+            INSERT INTO MEMBER_DETAIL_TBL (
+                MBR_ID,              
+                MBR_POINT_NY,        
+                MBR_GRADE_CODE,      
+                MBR_ACCUMULATE_MY   
+            ) VALUES (
+                P_MBR_ID,
+                V_MBR_POINT_NY, -- 적립금
+                V_MBR_GRADE_CODE,-- 1001 : 일반회원3% , 1002 : 실버5% , 1003 : 골드7% , 1004 다이아10%
+                V_MBR_ACCUMULATE_MY -- 회원 주문 누적 금액 
+            );
+
+            COMMIT; -- 2개테이블 모두 입력이 되면 COMMIT처리함
+       EXCEPTION -- 예외발생시 EXCEPTION 
+--        WHEN NO_DATE_FOUND THEN --SELECT 결과 없을때
+--            RAISE INSERT_ERR;
+--            P_ERRCODE := 'Y';
+        WHEN OTHERS THEN
+            RAISE INSERT_ERR;
+            P_ERRCODE := 'Y';
+       END;
+       
+   EXCEPTION
+     WHEN INSERT_ERR THEN
+       ROLLBACK;
+       DBMS_OUTPUT.PUT_LINE('============================================START============================================');
+      --P_ERRCODE := 'Y'; -- 에러코드값 디폴트N
+      P_ERRMSG  := '회원가입정보 입력 오류 발생' || SQLCODE || SUBSTR( SQLERRM, 1, 200 ); --SQLCODE 에러코드 /SQLERRM 에러코드 내용
+       RETURN;
+     WHEN OTHERS THEN
+       --P_ERRCODE := 'Y'; -- 에러코드값 디폴트N
+      P_ERRMSG  := '그 외 오류 발생' || SQLCODE || SUBSTR( SQLERRM, 1, 200 );
+       RETURN;
+END P_MEMBER_ADD;
+
+
+
+EXEC P_MEMBER_ADD( 
+    #{MBR_ID},           
+    #{MBR_NM},          
+    #{MBR_PW},           
+    #{MBR_ZIP},          
+    #{MBR_ADDR},         
+    #{MBR_DADDR},        
+    #{MBR_TELNO},        
+    #{MBR_EML_ADDR},    
+    #{MBR_EML_ADDR_YN},
+    #{P_ERRCODE}
+    #{P_ERRMSG}
+);
+
 
 
 

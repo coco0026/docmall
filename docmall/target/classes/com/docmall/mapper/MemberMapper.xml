@@ -27,10 +27,55 @@
 		)
 	</insert>
 	
+	<!-- 아이디 중복확인 -->
 	<select id="idCheck" resultType="String" parameterType="String">
 		SELECT MBR_ID 
 		FROM MEMBER_TBL 
 		WHERE MBR_ID = #{mbr_id}
 	</select>
+	
+	<!-- 로그인 -->
+	<select id="login_ok" resultType="com.docmall.domain.MemberVO" parameterType="com.docmall.dto.LoginDTO">
+		SELECT A.MBR_ID,
+			   A.MBR_NM,
+			   A.MBR_PW,
+			   A.MBR_ZIP,
+			   A.MBR_ADDR,
+			   A.MBR_DADDR,
+			   A.MBR_TELNO, 
+        	   A.MBR_EML_ADDR,
+        	   A.MBR_EML_ADDR_YN,
+        	   B.MBR_POINT_NY,
+        	   B.MBR_GRADE_CODE,
+        	   B.MBR_ACCUMULATE_MY
+		FROM MEMBER_TBL A, 
+			 MEMBER_DETAIL_TBL B
+		WHERE A.MBR_ID = B.MBR_ID AND
+              A.MBR_ID = #{mbr_id}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 </mapper>

@@ -138,11 +138,17 @@
 		    <div class="col-sm-4">
 		      <input type="text" class="form-control" id="mbr_eml_addr" name="mbr_eml_addr">
 		    </div>
+		    <div class="col-sm-1-left">
+		      <button type="button" class="btn btn-outline-info" id="btnAuthcode">인증요청</button>
+		    </div>
 		  </div>
 		  <div class="form-group row">
-		    <label for="staticEmail" class="col-sm-2 col-form-label">전자우편<br> 인증코드</label>
+		    <label for="staticEmail" class="col-sm-2 col-form-label">인증코드</label>
 		    <div class="col-sm-4">
-		      <input type="text" class="form-control" id="staticEmail">
+		      <input type="text" class="form-control" id="mailAuthcode">
+		    </div>
+		    <div class="col-sm-1-left">
+		      <button type="button" class="btn btn-outline-info" id="btnMailConfirm">인증확인</button>
 		    </div>
 		  </div>
 		  <div class="form-group row">
@@ -181,16 +187,16 @@
 		  </div>
 		  <div class="form-group row">
 			  <div class="col-sm-12 text-center">
-			  	<button type="button" class="btn btn-dark" id="joinSend">회원가입</button>
+			  	<button type="button" class="btn btn-dark" id="btnJoin">회원가입</button>
 			  </div>			
 		  </div>
 	 </form>
   </div>
 
 
+</div>
   <!--  footer.jsp -->
 <%@include file="/WEB-INF/views/include/footer.jsp" %>
-</div>
 
 <%@include file="/WEB-INF/views/include/common.jsp" %>
 

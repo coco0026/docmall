@@ -48,11 +48,13 @@
 	
 	<!-- 메일기능 관련 설정 -->
 	<!-- https://myaccount.google.com/lesssecureapps 보안수준 낮추기설정 -->
+	<!-- https://myaccount.google.com/security?rapt=AEjHL4OdkuzyEZ7kVBfl7IjImC8vCQOvguwootB5OVe6lT5TDHpILM5DO4vkNzw5y1RIQtWr_0s09Tz1gwq2JxhmNX6GQsCVRQ -->
+	<!-- 위 url에서 앱 비밀번호 발급후 password에 입력 -->
 	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 	  <property name="host" value="smtp.gmail.com" />
 	  <property name="port" value="587" />
-	  <property name="username" value="abc@gmail.com" />
-	  <property name="password" value="1234" />
+	  <property name="username" value="dudtn1992@gmail.com" />
+	  <property name="password" value="ndgqjaocsylnoxvc" /> <!-- 구글 앱설정에서 윈도우데스크탑 앱비번 발급 -->
 	  <property name="javaMailProperties">
 	  <props>
 	    <prop key="mail.smtp.auth">true</prop>
