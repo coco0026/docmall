@@ -97,8 +97,9 @@
   <body>
     
 <%@include file="/WEB-INF/views/include/header.jsp" %>
-
-<h3>회원가입</h3> 
+<div class="mb-5 text-center">
+	<h3>회원가입</h3> 
+</div>
 
 <div class="container">
   <div class="mb-3 text-center">

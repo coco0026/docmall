@@ -9,13 +9,28 @@
 
 				//유효성 검사
 
+				//아이디 중복 체크 사용여부.
+				if(!isIdCheck){
+					alert("아이디 중복확인을 해주세요")
+					return;
+
+				}
+
+				//메일 인증 확인 여부
+		//		if(!isAuthCode){
+		//			alert("메일 인증확인을 해주세요")
+		//			return;
+					
+		//		}
+
+
 				joinForm.submit();
 			});
 
 		
 
 			// ID중복체크			
-			let isIdCheck = false;
+			let isIdCheck = false; // ID중복체크 플래그 변수
 			$("#btnIdCheck").on("click", function(){				
 				
 				//아이디 입력 확인
@@ -78,7 +93,8 @@
 
 			});
 
-			let isAuthCode = false;
+			//메일인증 확인
+			let isAuthCode = false; //메일 인증확인 플래그 변수
 			$("#btnMailConfirm").on("click",function(){
 
 				let authCode = $("#mailAuthcode").val();

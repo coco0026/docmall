@@ -14,6 +14,9 @@ public interface MemberService {
 	/* 로그인 */
 	MemberVO login_ok(LoginDTO dto);
 	
+	/* 로그인시간 업데이트 */
+	void login_date(String mbr_id);
+	
 	
 
 }

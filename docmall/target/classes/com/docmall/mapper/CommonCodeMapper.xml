@@ -3,7 +3,12 @@
 <mapper namespace="com.docmall.mapper.CommonCodeMapper">
 
 
-	<select id="">
-	
+	<!-- 자식코드로 자식테이블 셀렉트 -->
+	<select id="commonCodeChildSel" parameterType="long" resultType="com.docmall.domain.CommonCodeVO">
+		SELECT COMMON_CODE_CHILD, 
+			   COMMON_CODE, 
+			   COMMON_CODE_NM
+		FROM COMMON_CODE_DETAIL_TBL 
+		WHERE COMMON_CODE_CHILD = #{common_code}
 	</select>
 </mapper>

@@ -6,7 +6,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +18,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.docmall.domain.MemberVO;
 import com.docmall.dto.LoginDTO;
+import com.docmall.service.CommonCodeService;
+import com.docmall.service.EmailService;
 import com.docmall.service.MemberService;
 
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -25,8 +30,17 @@ import lombok.extern.log4j.Log4j;
 @Controller
 public class MemberController {
 	
-	@Autowired
+	//스프링시큐리티 암호화 클래스 
+	@Setter(onMethod_ = {@Autowired})
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	
+	@Setter(onMethod_ = {@Autowired})
 	private MemberService service;
+	
+	//공통코드 호출
+	@Setter(onMethod_ = {@Autowired})
+	private CommonCodeService commonCodeService;
 
 	//회원가입 폼
 	@GetMapping("/join")
@@ -34,9 +48,13 @@ public class MemberController {
 		
 	}
 	
-	//회원가입 기능
+	//회원정보 저장
 	@PostMapping("/join")
 	public String join(MemberVO vo, RedirectAttributes rttr)throws Exception { //RedirectAttributes는 Excepption
+		
+		String cryptEncoderPW = bCryptPasswordEncoder.encode(vo.getMbr_pw());//vo에 담긴 패스워드값을 암호화한다.
+		
+		vo.setMbr_pw(cryptEncoderPW);//암호화한 패스워드값을 vo에 저장
 		
 		log.info("call join...");
 		
@@ -44,12 +62,16 @@ public class MemberController {
 		if(vo.getMbr_eml_addr_yn() == null) {
 			vo.setMbr_eml_addr_yn("N");
 		}
-		
+				
 		log.info(vo);
 		
-		service.join(vo);
+		//service 호출시 메서드 int형으로 변경하여 로그인성공, 실패 나누는 작업 해야함, 현재 void
 		
-		return "";
+		service.join(vo);		
+		
+		rttr.addFlashAttribute("msg", "joinSuccess");//로그인 완료시 메시지
+		
+		return "redirect:/";
 	}
 	
 	
@@ -86,6 +108,8 @@ public class MemberController {
 		
 		if(userAuthCode.equals(authCode)) { //user가 받은 인증코드와 java에서 만든 인증코드 비교
 			entity = new ResponseEntity<String>("success", HttpStatus.OK);
+			
+			session.removeAttribute("authCode");//인증 완료 후 세션 제거
 		}else {
 			entity = new ResponseEntity<String>("fail", HttpStatus.OK);
 		}
@@ -103,7 +127,8 @@ public class MemberController {
 		
 	}
 	
-	
+	//로그인
+	/* @Transactional */
 	@PostMapping("/login")
 	public String login_ok(LoginDTO dto, RedirectAttributes rttr, HttpSession session) throws Exception{
 		
@@ -112,25 +137,27 @@ public class MemberController {
 		
 		log.info("로그인 정보 : " + dto);
 		
+		
 		//로그인 정보 인증작업
 		MemberVO loginVo = service.login_ok(dto); //로그인정보 MemberVo에 담는다.
 		
 		String url ="";
 		String msg ="";
 		
+		log.info("loginVo : " + loginVo);
+		
 		if(loginVo != null) { //아이디가 존재하는 경우
 			
 			String passwd = dto.getMbr_pw(); // 사용자가 입력한 비밀번호
 			String db_passwd = loginVo.getMbr_pw(); //db에서 가져온 비밀번호
 			
-			
 			//사용자가 입력한 평문텍스트와 DB암호화된 비밀번호 비교작업
-			if(passwd.equals(db_passwd)) {
+			if(bCryptPasswordEncoder.matches(passwd, db_passwd)) {
 				//1)비번이 일치되는경우
-				url ="/"; 
+				url ="/"; //main화면
 				session.setAttribute("loginStatus", loginVo); //인증성공시 서버측에 세션을 통한 정보 저장.
+				service.login_date(loginVo.getMbr_id()); //로그인 성공시 로그인 시간 UPDATE
 				msg = "loginSuccess";
-				log.info("session.getAttributeNames() : " + session.getAttributeNames());
 			}else {
 				//2)비번이 일치되지 안흔 경우
 				url ="/member/login";
@@ -139,27 +166,33 @@ public class MemberController {
 			
 		}else {//아이디가 존재하지 않는 경우
 			url ="/member/login";
-			msg = "idNull";
+			msg = "idFail";
 			
 		}
 		
 		rttr.addFlashAttribute("msg", msg);
-		
 		return "redirect:"+url;
 	}
 	
 	
 	
 	//로그아웃
-	@GetMapping("/logout")
+	@GetMapping("/logout")//대부분 보안 때문에 POST방식을 사용함
 	public String logout(RedirectAttributes rttr, HttpSession session) {
 		
-		if(session.getAttributeNames() != null) {
-			
-			session.invalidate();
-		}
+		//세션 제거
+		session.invalidate();
+		
+		rttr.addFlashAttribute("msg", "logout"); //로그아웃 완료 메시지
 		
 		return "redirect:/";
+	}
+	
+	
+	//아이디,비밀번호 찾기 폼
+	@GetMapping("/lostpass")
+	public void lostpass() {
+		
 	}
 	
 	

@@ -23,10 +23,17 @@
 				}
 
 
-				
+				return true;				
 			});
 
-		
+
+
+
+			//아이디,비번 찾기 폼
+			$("#btnSearchIdPw").on("click", function(){
+				alert("asdf");
+				location.href = "/member/lostpass";
+			});
 
 
 

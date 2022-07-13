@@ -3,7 +3,7 @@
 <mapper namespace="com.docmall.mapper.MemberMapper">
 
 	<!-- 회원가입 -->
-	<insert id="join" parameterType="com.docmall.domain.MemberVO">
+	<!-- <insert id="join" parameterType="com.docmall.domain.MemberVO">
 		INSERT INTO MEMBER_TBL(
 			MBR_ID, 
 			MBR_NM, 
@@ -25,7 +25,24 @@
 			#{mbr_eml_addr},
 			#{mbr_eml_addr_yn}
 		)
+	</insert> -->
+	<!-- 회원가입 프로시저 사용-->
+	<insert id="join" parameterType="com.docmall.domain.MemberVO" statementType="CALLABLE">
+		call P_MEMBER_ADD( 
+	        #{mbr_id},           
+	        #{mbr_nm},          
+	        #{mbr_pw},           
+	        #{mbr_zip},          
+	        #{mbr_addr},           
+	        #{mbr_daddr},       
+	        #{mbr_telno},      
+	        #{mbr_eml_addr},      
+	        #{mbr_eml_addr_yn},  
+	        #{p_errcode, mode=OUT, jdbcType=VARCHAR},
+			#{p_errmsg, mode=OUT, jdbcType=VARCHAR}
+		)
 	</insert>
+	
 	
 	<!-- 아이디 중복확인 -->
 	<select id="idCheck" resultType="String" parameterType="String">
@@ -53,6 +70,13 @@
 		WHERE A.MBR_ID = B.MBR_ID AND
               A.MBR_ID = #{mbr_id}
 	</select>
+	
+	<!-- 로그인시간 업데이트 -->
+	<update id="login_date" parameterType="String">
+		UPDATE MEMBER_TBL 
+		SET MBR_CNTN_DATE = SYSDATE
+	    WHERE MBR_ID = #{mbr_id}
+	</update>
 	
 	
 	

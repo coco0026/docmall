@@ -34,6 +34,28 @@
     
     <!-- Custom styles for this template -->
     <link href="pricing.css" rel="stylesheet">
+    
+    <script>
+		//프로세스 완료 메시지
+    	//로그아웃 메시지 rttr.addFlashAttribute("msg", "logout");
+		let msg = "${msg}";
+		
+    	if(msg == 'logout'){
+    		alert("로그아웃 되었습니다.");
+    	}
+    	
+    	//회원가입 정상가입 메시지
+    	if(msg == 'joinSuccess'){
+    		alert("회원가입이 정상적으로 완료되었습니다.");
+    	}
+    	
+    	//로그인 완료 메시지
+    	if(msg == "loginSuccess"){
+			alert("정상적으로 로그인이 되었습니다.");
+		}
+		
+    </script>
+    
   </head>
   <body>
     

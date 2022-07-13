@@ -35,14 +35,13 @@
     <!-- Custom styles for this template -->
     <link href="pricing.css" rel="stylesheet">
 	<script>
-		let msg = "$(msg)";
-		if(msg == "idNull"){
+		/* 프로세스 완료 메시지 */
+		let msg = "${msg}";
+		if(msg == "idFail"){
 			alert("아이디를 확인하세요.");
 		}else if(msg == "passwdFail"){
 			alert("비밀번호를 확인하세요.");
-		}else if(msg == "loginSuccess"){
-			alert("정상적으로 로그인이 되었습니다.");
-		}
+		}else 
 	</script>
     
   </head>
@@ -50,10 +49,11 @@
   <body>
     
 <%@include file="/WEB-INF/views/include/header.jsp" %>
+<div class="mb-5 text-center">
+	<h3>로그인</h3> 
+</div>
 
-<h3>로그인</h3> 
-
-<div class="container">
+<div class="my-5 container">
   <div class="mb-3 text-center">
 	  <form id="loginForm" action="login" method="post">
 		  <div class="form-group row">
@@ -71,7 +71,8 @@
 		  <div class="form-group row">
 			  <div class="col-sm-12 text-center">
 			  	<button type="submit" class="btn btn-dark" id="btnLogin">로그인</button>
-			  </div>			
+			  	<button type="button" class="btn btn-dark" id="btnSearchIdPw">아이디/비밀번호 찾기</button>
+			  </div>
 		  </div>
 	 </form>
   </div>
@@ -85,7 +86,62 @@
 
 
 
-	<script type="text/javascript" src="/js/member/login.js"></script>
+	<script>
+	/* 로그인  */
+	/* html 문서와 내용을 브러우저가 읽고 난 이후 동작되는 특징 */
+	$(document).ready(function(){
+
+		let loginForm =  $("#loginForm");
+
+		//로그인
+		$("#loginForm").on("submit", function(){
+
+			//유효성 검사
+			//아이디 입력 확인
+			if($("#mbr_id").val() == "") {
+				alert("아이디를 입력하세요");
+				$("#mbr_id").focus();
+				return false;
+			}
+
+			//패스워드 입력 확인
+			if($("#mbr_pw").val() == "") {
+				alert("비밀번호를 입력하세요");
+				$("#mbr_pw").focus();
+				return false;
+			}
+
+
+			return true;				
+		});
+
+
+
+
+		//아이디,비번 찾기 폼
+		$("#btnSearchIdPw").on("click", function(){
+			location.href = "/member/lostpass";
+		});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	});
+	</script>
 
   </body>
 </html>
