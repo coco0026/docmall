@@ -1,8 +1,10 @@
 package com.docmall.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class EmailDTO {
 	
 	private String senderName; 		//발신자 이름

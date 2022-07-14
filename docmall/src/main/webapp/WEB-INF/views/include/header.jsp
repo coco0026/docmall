@@ -23,6 +23,7 @@
 			  <nav class="my-2 my-md-0 mr-md-3">
 			  	${loginStatus.mbr_nm}님 환영합니다.
 			  	
+			    <a class="p-2 text-dark" href="/member/confirmPw">MODIFY</a> |
 			    <a class="p-2 text-dark" href="#">MYPAGE</a> |
 			    <a class="p-2 text-dark" href="#">ORDER</a> |
 			    <a class="p-2 text-dark" href="#">CART</a>

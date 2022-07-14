@@ -4,11 +4,11 @@
 
 
 	<!-- 자식코드로 자식테이블 셀렉트 -->
-	<select id="commonCodeChildSel" parameterType="long" resultType="com.docmall.domain.CommonCodeVO">
-		SELECT COMMON_CODE_CHILD, 
+	<select id="commonCodeDetailSel" parameterType="long" resultType="com.docmall.domain.CommonCodeVO">
+		SELECT COMMON_CODE_DETAIL, 
 			   COMMON_CODE, 
-			   COMMON_CODE_NM
+			   COMMON_CODE_DETAIL_NM
 		FROM COMMON_CODE_DETAIL_TBL 
-		WHERE COMMON_CODE_CHILD = #{common_code}
+		WHERE COMMON_CODE_DETAIL = #{common_code_detail}
 	</select>
 </mapper>

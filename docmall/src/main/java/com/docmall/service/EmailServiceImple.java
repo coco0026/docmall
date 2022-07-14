@@ -19,7 +19,7 @@ public class EmailServiceImple implements EmailService {
 	private JavaMailSender mailSender;
 
 	@Override
-	public void sendMain(EmailDTO dto, String authCode) {
+	public void sendMain(EmailDTO dto, String message) {
 
 		//메일 구성정보를 담당하는 객체(받는사람, 보내는 사람, 전자우편주소, 본문내용)
 		MimeMessage msg = mailSender.createMimeMessage();
@@ -36,7 +36,7 @@ public class EmailServiceImple implements EmailService {
 			
 			//본문내용
 //			msg.setText(authCode, "text/html; charset=utf-8");
-			msg.setText(authCode, "utf-8");
+			msg.setText(message, "utf-8");
 			
 			mailSender.send(msg); // Gmail 보안설정 확인
 		}catch (Exception e) {

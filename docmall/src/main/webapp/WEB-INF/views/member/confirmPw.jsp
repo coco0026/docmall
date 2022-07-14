@@ -35,14 +35,13 @@
     <!-- Custom styles for this template -->
     <link href="pricing.css" rel="stylesheet">
 	<script>
-		/* 프로세스 완료 메시지 */
-		let msg = "${msg}";
-		if(msg == "idFail"){
-			alert("아이디를 확인하세요.");
-		}else if(msg == "passwdFail"){
-			alert("비밀번호를 확인하세요.");
-		}else 
+	
+	let msg = "${msg}";
+	if(msg == "noPW"){
+		alert("비밀번호를 확인하세요.");
+	}
 	</script>
+	
     
   </head>
   
@@ -50,16 +49,17 @@
     
 <%@include file="/WEB-INF/views/include/header.jsp" %>
 <div class="mb-5 text-center">
-	<h3>로그인</h3> 
+	<h3>비밀번호 재확인</h3> 
 </div>
 
 <div class="my-5 container">
   <div class="mb-3 text-center">
-	  <form id="loginForm" action="login" method="post">
+	  <form id="confirmPwForm" action="confirmPw" method="post">
 		  <div class="form-group row">
 		    <label for="mbr_id" class="col-sm-6 col-form-label">아이디</label>
 		    <div class="col-sm-6">
-		      <input type="text" class="form-control" id="mbr_id" name="mbr_id" placeholder="아이디를 입력하세요.">
+		    	${sessionScope.loginStatus.mbr_id }
+		      <input type="hidden" class="form-control" id="mbr_id" name="mbr_id" value="${sessionScope.loginStatus.mbr_id }">
 		    </div>
 		  </div>
 		  <div class="form-group row">
@@ -70,8 +70,8 @@
 		  </div>
 		  <div class="form-group row">
 			  <div class="col-sm-12 text-center">
-			  	<button type="submit" class="btn btn-dark" id="btnLogin">로그인</button>
-			  	<button type="button" class="btn btn-dark" id="btnSearchIdPw">아이디/비밀번호 찾기</button>
+			  	<button type="submit" class="btn btn-dark" id="btnconfirmPw">확인</button>
+			  	<button type="button" class="btn btn-dark" id="btnSearchIdPw">취소</button>
 			  </div>
 		  </div>
 	 </form>
@@ -91,18 +91,13 @@
 	/* html 문서와 내용을 브러우저가 읽고 난 이후 동작되는 특징 */
 	$(document).ready(function(){
 
-		let loginForm =  $("#loginForm");
+		let confirmPwForm =  $("#confirmPwForm");
 
 		//로그인
-		$("#loginForm").on("submit", function(){
+		$("#btnconfirmPw").on("submit", function(){
 
 			//유효성 검사
 			//아이디 입력 확인
-			if($("#mbr_id").val() == "") {
-				alert("아이디를 입력하세요");
-				$("#mbr_id").focus();
-				return false;
-			}
 
 			//패스워드 입력 확인
 			if($("#mbr_pw").val() == "") {
@@ -120,7 +115,8 @@
 
 		//아이디,비번 찾기 폼
 		$("#btnSearchIdPw").on("click", function(){
-			location.href = "/member/lostpass";
+			
+			
 		});
 		
 		

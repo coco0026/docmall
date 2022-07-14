@@ -12,10 +12,11 @@ public class CommonCodeServiceImple implements CommonCodeService {
 	@Autowired
 	private CommonCodeMapper mapper;
 
+	//자식코드로 자식테이블 정보
 	@Override
-	public CommonCodeVO commonCodeChildSel(Long common_code) {
+	public CommonCodeVO commonCodeDetailSel(Long common_code_detail) {
 		// TODO Auto-generated method stub
-		return mapper.commonCodeChildSel(common_code);
+		return mapper.commonCodeDetailSel(common_code_detail);
 	}
 
 }

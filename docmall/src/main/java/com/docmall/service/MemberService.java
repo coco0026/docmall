@@ -1,5 +1,7 @@
 package com.docmall.service;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.docmall.domain.MemberVO;
 import com.docmall.dto.LoginDTO;
 
@@ -17,6 +19,17 @@ public interface MemberService {
 	/* 로그인시간 업데이트 */
 	void login_date(String mbr_id);
 	
+	/* 아이디 찾기 */
+	String searchID(String mbr_nm, String mbr_eml_addr);
+	
+	//임시 비밀번호 발급을 위한 확인작업
+	String getIdEmailExists(String mbr_id, String mbr_eml_addr);
+	
+	//임시 비밀번호를 암호화하여 업데이트
+	void changeImsiPW(String mbr_id, String enc_mbr_pw);
+	
+	//회원정보 업데이트
+	void modify(MemberVO vo);
 	
 
 }

@@ -103,58 +103,41 @@
 
 <div class="container">
   <div class="mb-3 text-center">
-	  <form id="joinForm" action="join" method="post">
+	  <form id="modifyForm" action="modify" method="post">
 		  <div class="form-group row">
 		    <label for="mbr_id" class="col-sm-2 col-form-label">아이디</label>
 		    <div class="col-sm-5">
-		      <input type="text" class="form-control" id="mbr_id" name="mbr_id" placeholder="아이디를  입력하세요">
+		      <c:out value="${memberVO.mbr_id}"></c:out>
+		      <input type="hidden" class="form-control" id="mbr_id" name="mbr_id">
 		    </div>
-		    <div class="col-sm-1-left">
-		      <button type="button" class="btn btn-outline-info" id="btnIdCheck">ID중복체크</button>
-		    </div>
-		    <label for="mbr_pw" class="col-sm-3 col-form-label" id="idCheckStatus">
-		    	
-		    </label>
 		  </div>
 		  <div class="form-group row">
 		    <label for="inputPassword" class="col-sm-2 col-form-label">비밀번호</label>
 		    <div class="col-sm-5">
-		      <input type="password" class="form-control" id="mbr_pw" name="mbr_pw" placeholder="비밀번호를  입력하세요">
+		      <input type="password" class="form-control" id="mbr_pw" name="mbr_pw"  placeholder="비밀번호를  입력하세요">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label for="mbr_pw_chck" class="col-sm-2 col-form-label">비밀번호확인</label>
 		    <div class="col-sm-5">
-		      <input type="password" class="form-control" id="mbr_pw_chck">
+		      <input type="password" class="form-control" id="mbr_pw_chck" >
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label for="mbr_nm" class="col-sm-2 col-form-label">이름</label>
 		    <div class="col-sm-5">
-		      <input type="text" class="form-control" id="mbr_nm" name="mbr_nm">
+		      <input type="text" class="form-control" id="mbr_nm" name="mbr_nm" value="${memberVO.mbr_nm}">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label for="mbr_eml_addr" class="col-sm-2 col-form-label">전자우편</label>
 		    <div class="col-sm-5">
-		      <input type="text" class="form-control" id="mbr_eml_addr" name="mbr_eml_addr">
-		    </div>
-		    <div class="col-sm-1-left">
-		      <button type="button" class="btn btn-outline-info" id="btnAuthcode">인증요청</button>
-		    </div>
-		  </div>
-		  <div class="form-group row">
-		    <label for="staticEmail" class="col-sm-2 col-form-label">인증코드</label>
-		    <div class="col-sm-5">
-		      <input type="text" class="form-control" id="mailAuthcode">
-		    </div>
-		    <div class="col-sm-1-left">
-		      <button type="button" class="btn btn-outline-info" id="btnMailConfirm">인증확인</button>
+		      <input type="text" class="form-control" id="mbr_eml_addr" name="mbr_eml_addr" value="${memberVO.mbr_eml_addr}">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label for="mbr_telno" class="col-sm-2 col-form-label">휴대폰 번호</label>
-		    <div class="col-sm-2">
+		    <!-- <div class="col-sm-2">
 		      <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
 		        <option value="010" selected>010</option>
 		        <option value="011">011</option>
@@ -163,15 +146,15 @@
 		        <option value="018">018</option>
 		        <option value="019">019</option>
 		      </select>
-		    </div>
+		    </div> -->
 		    <div class="col-sm-3">
-		      <input type="text" class="form-control" id="mbr_telno" name="mbr_telno">
+		      <input type="text" class="form-control" id="mbr_telno" name="mbr_telno" value="${memberVO.mbr_telno}">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label for="sample6_postcode" class="col-sm-2 col-form-label">우편번호</label>
 		    <div class="col-sm-5">
-		      <input type="text" class="form-control" id="sample6_postcode" name="mbr_zip" placeholder="우편번호" readonly>
+		      <input type="text" class="form-control" id="sample6_postcode" name="mbr_zip" value="${memberVO.mbr_zip}" placeholder="우편번호" readonly>
 		    </div>
 		    <div class="col-sm-1-left">
 		      <button type="button"  class="btn btn-outline-info" onclick="sample6_execDaumPostcode()">우편번호 찾기</button>
@@ -180,25 +163,25 @@
 		  <div class="form-group row">
 		    <label for="sample6_address" class="col-sm-2 col-form-label">주소</label>
 		    <div class="col-sm-5">
-		      <input type="text" class="form-control" id="sample6_address" name="mbr_addr" readonly>
+		      <input type="text" class="form-control" id="sample6_address" name="mbr_addr" value="${memberVO.mbr_addr}" readonly>
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label for="sample6_detailAddress" class="col-sm-2 col-form-label">상세주소</label>
 		    <div class="col-sm-5">
-		      <input type="text" class="form-control" id="sample6_detailAddress" name="mbr_daddr">
+		      <input type="text" class="form-control" id="sample6_detailAddress" value="${memberVO.mbr_daddr}" name="mbr_daddr">
 		      <input type="hidden" id="sample6_extraAddress">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		      <label class="form-check-label col-sm-2" for="defaultCheck1">메일 수신동의</label>
 			  <div class="col-sm-10 text-left">
-			  	<input class="form-check-input" type="checkbox" value="Y" id="mbr_eml_addr_yn" name="mbr_eml_addr_yn">
+			  	<input class="form-check-input" type="checkbox" value="Y" id="mbr_eml_addr_yn" name="mbr_eml_addr_yn"  ${memberVO.mbr_eml_addr_yn == 'Y' ? 'checked':''}>
 			  </div>			
 		  </div>
 		  <div class="form-group row">
 			  <div class="col-sm-12 text-center">
-			  	<button type="button" class="btn btn-dark" id="btnJoin">회원가입</button>
+			  	<button type="button" class="btn btn-dark" id="btnModify">회원수정</button>
 			  </div>			
 		  </div>
 	 </form>
@@ -213,7 +196,37 @@
 
 
 
-	<script type="text/javascript" src="/js/member/join.js"></script>
+	<script>
+	/* 회원가입  */
+	//html 문서와 내용을 브러우저가 읽고 난 이후 동작되는 특징
+			$(document).ready(function(){
+
+				let modifyForm =  $("#modifyForm");
+
+				//회원가입
+				$("#btnModify").on("click", function(){
+
+					//유효성 검사
+
+					//아이디 중복 체크 사용여부.
+					if(!isIdCheck){
+						alert("아이디 중복확인을 해주세요")
+						return;
+
+					}
+
+
+
+					modifyForm.submit();
+				});
+
+			
+				
+			
+
+		});
+
+	</script>
 
   </body>
 </html>

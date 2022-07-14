@@ -78,9 +78,45 @@
 	    WHERE MBR_ID = #{mbr_id}
 	</update>
 	
+	<!-- 아이디찾기 -->
+	<select id="searchID" resultType="String">
+		SELECT MBR_ID 
+		FROM MEMBER_TBL 
+		WHERE MBR_EML_ADDR = #{mbr_eml_addr} AND
+		  	  MBR_NM = #{mbr_nm} 
+	</select>
+	
+	<!-- 임시 비밀번호 발급을 위한 확인작업 -->
+	<select id="getIdEmailExists" resultType="String">
+		SELECT MBR_ID 
+		FROM MEMBER_TBL 
+		WHERE MBR_EML_ADDR = #{mbr_eml_addr} AND
+		  	  MBR_ID = #{mbr_id} 
+	</select>
+	
+	<!-- 임시비밀번호로 업데이트 -->
+	<update id="changeImsiPW" parameterType="String">
+		UPDATE MEMBER_TBL 
+		SET MBR_PW = #{enc_mbr_pw}
+	    WHERE MBR_ID = #{mbr_id}
+	</update>
 	
 	
-	
+	<!-- 회원정보수정 -->
+	<update id="modify" parameterType="com.docmall.domain.MemberVO">
+		UPDATE MEMBER_TBL 
+		SET MBR_NM  		=	#{mbr_nm},      
+			<if test ="mbr_pw != null">    
+			MBR_PW  		=	#{mbr_pw}, 
+			</if>          
+			MBR_ZIP         =	#{mbr_zip},          
+			MBR_ADDR        =	#{mbr_addr},           
+			MBR_DADDR       = 	#{mbr_daddr},       
+			MBR_TELNO       = 	#{mbr_telno},      
+			MBR_EML_ADDR    =   #{mbr_eml_addr},      
+			MBR_EML_ADDR_YN =   #{mbr_eml_addr_yn},  
+	    WHERE MBR_ID = #{mbr_id}
+	</update>
 	
 	
 	
