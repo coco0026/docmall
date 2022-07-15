@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.docmall.mapper.AdminMapper">
+
+	<!-- 로그인을 위한 아이디 검색 -->
+	<select id="adminSel" resultType="com.docmall.domain.AdminVO" parameterType="com.docmall.dto.AdminLoginDTO">
+		SELECT MNGR_ID, 
+			   MNGR_PW, 
+			   MNGR_NM, 
+			   MNGR_CNTN_DATE 
+		FROM MANAGER_TBL 
+		WHERE MNGR_ID = #{mngr_id}
+	</select>
+	
+	<!-- 로그인 시간 업데이트 -->
+	<update id="login_date" parameterType="String">
+		UPDATE MANAGER_TBL 
+		SET MNGR_CNTN_DATE = SYSDATE
+	    WHERE MNGR_ID = #{mngr_id}
+	</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

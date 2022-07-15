@@ -19,7 +19,7 @@ public class MemberServiceImple implements MemberService {
 	
 	//회원가입
 	@Override
-	public void join(MemberVO vo) { //인트로 바꾸자
+	public void join(MemberVO vo) { 
 		// TODO Auto-generated method stub
 		log.info("MemberServiceImple 동작함");
 		mapper.join(vo);
@@ -32,6 +32,20 @@ public class MemberServiceImple implements MemberService {
 	public String idCheck(String mbr_id) {
 		// TODO Auto-generated method stub
 		return mapper.idCheck(mbr_id);
+	}
+	
+	//휴대폰번호 중복확인
+	@Override
+	public String telNoCheck(String mbr_telno) {
+		// TODO Auto-generated method stub
+		return mapper.telNoCheck(mbr_telno);
+	}
+	
+	//이메일 중복확인
+	@Override
+	public String mailCheck(String mbr_eml_addr) {
+		// TODO Auto-generated method stub
+		return mapper.mailCheck(mbr_eml_addr);
 	}
 	
 	//로그인
@@ -75,5 +89,11 @@ public class MemberServiceImple implements MemberService {
 		// TODO Auto-generated method stub
 		mapper.modify(vo);
 	}
+
+
+	
+
+
+	
 
 }

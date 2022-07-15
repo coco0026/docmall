@@ -14,6 +14,12 @@ public interface MemberMapper {
 	//아이디중복 확인
 	String idCheck(String mbr_id);
 	
+	//휴대폰 번호 중복확인
+	String telNoCheck(String mbr_telno);
+	
+	//이메일 중복확인
+	String mailCheck(String mbr_eml_addr);
+	
 	//로그인
 	MemberVO login_ok(LoginDTO dto);
 	

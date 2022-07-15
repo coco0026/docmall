@@ -105,6 +105,48 @@ public class MemberController {
 		return entity;
 	}
 	
+	//휴대폰번호 중복체크
+	@ResponseBody
+	@GetMapping("/telNoCheck")
+	public ResponseEntity<String> telNoCheck(@RequestParam("mbr_telno") String mbr_telno){
+		
+		ResponseEntity<String> entity = null;
+		
+		//아이디 존재여부작업
+		String isUseTelNo = "";
+		
+		if(service.telNoCheck(mbr_telno) != null) {
+			isUseTelNo = "no"; // 중복된 비번 존재, 사용 불가능
+		}else {
+			isUseTelNo = "yes"; // 중복된 비번 없음, 사용 가능
+		}
+		
+		entity = new ResponseEntity<String>(isUseTelNo, HttpStatus.OK);
+		
+		return entity;
+	}
+	
+	
+	//이메일중복체크
+	@ResponseBody
+	@GetMapping("/mailCheck")
+	public ResponseEntity<String> mailCheck(@RequestParam("mbr_eml_addr") String mbr_eml_addr){
+		
+		ResponseEntity<String> entity = null;
+		
+		//아이디 존재여부작업
+		String isUseMail = "";
+		
+		if(service.mailCheck(mbr_eml_addr) != null) {
+			isUseMail = "no"; // 중복된 비번 존재, 사용 불가능
+		}else {
+			isUseMail = "yes"; // 중복된 비번 없음, 사용 가능
+		}
+		
+		entity = new ResponseEntity<String>(isUseMail, HttpStatus.OK);
+		
+		return entity;
+	}
 	
 	//메일 인증확인작업
 	@PostMapping("/confirmAuthCode")
@@ -167,15 +209,18 @@ public class MemberController {
 				session.setAttribute("loginStatus", loginVo); //인증성공시 서버측에 세션을 통한 정보 저장.
 				service.login_date(loginVo.getMbr_id()); //로그인 성공시 로그인 시간 UPDATE
 				msg = "loginSuccess";
+				log.info("로그인성공");
 			}else {
 				//2)비번이 일치되지 안흔 경우
 				url ="/member/login";
 				msg = "passwdFail";
+				log.info("비번다름");
 			}
 			
 		}else {//아이디가 존재하지 않는 경우
 			url ="/member/login";
 			msg = "idFail";
+			log.info("아디다름");
 			
 		}
 		
@@ -347,12 +392,19 @@ public class MemberController {
 	@PostMapping("/modify")
 	public String modify(MemberVO vo, RedirectAttributes rttr) {
 		
+		log.info("vo : " + vo);
+		
+		//파라미터가 일치하지 않는경우 null
+		//파라미터가 일치하는경우 값이 없으면 공백
+		
+		if(vo.getMbr_pw().equals("")) log.info("공백문자열");
+		
 		//pw가 null이 아닐경우
-		if(vo.getMbr_pw() != null) {
+		if(vo.getMbr_pw() != null || !vo.getMbr_pw().equals("")) {
 			String cryptEncoderPW = bCryptPasswordEncoder.encode(vo.getMbr_pw());//vo에 담긴 패스워드값을 암호화한다.
 			vo.setMbr_pw(cryptEncoderPW);//암호화한 패스워드값을 vo에 저장
+			log.info("vo : " + vo);
 		}
-		
 		
 		//Mber_eml_addr_yn의 파라미터가 Y가 아닐시 N
 		if(vo.getMbr_eml_addr_yn() == null) {
@@ -361,7 +413,7 @@ public class MemberController {
 		
 		service.modify(vo);
 		
-		return "";
+		return "redirect:/";
 	}
 	
 	

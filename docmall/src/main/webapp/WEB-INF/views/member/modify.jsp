@@ -108,7 +108,7 @@
 		    <label for="mbr_id" class="col-sm-2 col-form-label">아이디</label>
 		    <div class="col-sm-5">
 		      <c:out value="${memberVO.mbr_id}"></c:out>
-		      <input type="hidden" class="form-control" id="mbr_id" name="mbr_id">
+		      <input type="hidden" class="form-control" id="mbr_id" name="mbr_id" value="${memberVO.mbr_id}">
 		    </div>
 		  </div>
 		  <div class="form-group row">
@@ -206,14 +206,7 @@
 				//회원가입
 				$("#btnModify").on("click", function(){
 
-					//유효성 검사
 
-					//아이디 중복 체크 사용여부.
-					if(!isIdCheck){
-						alert("아이디 중복확인을 해주세요")
-						return;
-
-					}
 
 
 

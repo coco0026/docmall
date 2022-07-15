@@ -13,8 +13,15 @@ public interface MemberService {
 	/* 아이디 중복확인 */
 	String idCheck(String mbr_id);
 	
+	//휴대폰번호 중복확인
+	String telNoCheck(String mbr_telno);
+	
+	//이메일 중복확인
+		String mailCheck(String mbr_eml_addr);
+	
 	/* 로그인 */
 	MemberVO login_ok(LoginDTO dto);
+	
 	
 	/* 로그인시간 업데이트 */
 	void login_date(String mbr_id);

@@ -37,6 +37,7 @@
 	<script>
 		/* 프로세스 완료 메시지 */
 		let msg = "${msg}";
+		alert(msg);
 		if(msg == "idFail"){
 			alert("아이디를 확인하세요.");
 		}else if(msg == "passwdFail"){
@@ -89,6 +90,7 @@
 	<script>
 	/* 로그인  */
 	/* html 문서와 내용을 브러우저가 읽고 난 이후 동작되는 특징 */
+	
 	$(document).ready(function(){
 
 		let loginForm =  $("#loginForm");

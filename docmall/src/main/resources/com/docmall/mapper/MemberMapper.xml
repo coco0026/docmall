@@ -51,6 +51,20 @@
 		WHERE MBR_ID = #{mbr_id}
 	</select>
 	
+	<!-- 휴대폰번호 중복확인 -->
+	<select id="telNoCheck" resultType="String" parameterType="String">
+		SELECT MBR_TELNO 
+		FROM MEMBER_TBL 
+		WHERE MBR_TELNO = #{mbr_telno}
+	</select>
+	
+	<!-- 이메일 중복확인 -->
+	<select id="mailCheck" resultType="String" parameterType="String">
+		SELECT MBR_EML_ADDR 
+		FROM MEMBER_TBL 
+		WHERE MBR_EML_ADDR = #{mbr_eml_addr}
+	</select>
+	
 	<!-- 로그인 -->
 	<select id="login_ok" resultType="com.docmall.domain.MemberVO" parameterType="com.docmall.dto.LoginDTO">
 		SELECT A.MBR_ID,
@@ -106,7 +120,7 @@
 	<update id="modify" parameterType="com.docmall.domain.MemberVO">
 		UPDATE MEMBER_TBL 
 		SET MBR_NM  		=	#{mbr_nm},      
-			<if test ="mbr_pw != null">    
+			<if test ="mbr_pw != null and !mbr_pw.equals('')">    
 			MBR_PW  		=	#{mbr_pw}, 
 			</if>          
 			MBR_ZIP         =	#{mbr_zip},          
@@ -114,7 +128,7 @@
 			MBR_DADDR       = 	#{mbr_daddr},       
 			MBR_TELNO       = 	#{mbr_telno},      
 			MBR_EML_ADDR    =   #{mbr_eml_addr},      
-			MBR_EML_ADDR_YN =   #{mbr_eml_addr_yn},  
+			MBR_EML_ADDR_YN =   #{mbr_eml_addr_yn}  
 	    WHERE MBR_ID = #{mbr_id}
 	</update>
 	
