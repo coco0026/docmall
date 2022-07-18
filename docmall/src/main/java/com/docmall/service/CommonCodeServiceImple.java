@@ -1,5 +1,7 @@
 package com.docmall.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,18 @@ public class CommonCodeServiceImple implements CommonCodeService {
 	public CommonCodeVO commonCodeDetailSel(Long common_code_detail) {
 		// TODO Auto-generated method stub
 		return mapper.commonCodeDetailSel(common_code_detail);
+	}
+
+	@Override
+	public List<CommonCodeVO> getCommonCode() {
+		// TODO Auto-generated method stub
+		return mapper.getCommonCode();
+	}
+
+	@Override
+	public List<CommonCodeVO> getSubCommonCode(Integer common_code) {
+		// TODO Auto-generated method stub
+		return mapper.getSubCommonCode(common_code);
 	}
 
 }

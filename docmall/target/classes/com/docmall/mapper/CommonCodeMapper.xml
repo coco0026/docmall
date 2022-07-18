@@ -11,4 +11,23 @@
 		FROM COMMON_CODE_DETAIL_TBL 
 		WHERE COMMON_CODE_DETAIL = #{common_code_detail}
 	</select>
+	
+	<!-- 그룹코드 셀렉트 -->
+	<select id="getCommonCode" resultType="com.docmall.domain.CommonCodeVO">
+		SELECT COMMON_CODE,
+			   COMMON_CODE_NM
+		FROM COMMON_CODE_TBL		
+	</select>
+	
+	<!-- 자식코드 셀렉트 -->
+	<select id="getSubCommonCode" resultType="com.docmall.domain.CommonCodeVO">
+		SELECT COMMON_CODE,
+			   COMMON_CODE_CHILD_NM,
+			   COMMON_CODE_CHILD
+		FROM COMMON_CODE_DETAIL_TBL		
+		WHERE COMMON_CODE = #{common_code}
+	</select>
+	
+	
+	
 </mapper>

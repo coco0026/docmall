@@ -224,7 +224,7 @@
 					
 					
 					//비밀번호 유효성 검사 Start------------------------------
-					let mbr_pw = $("#mbr_pw").val();
+					/* let mbr_pw = $("#mbr_pw").val();
 					let num = mbr_pw.search(/[0-9]/g);
 					let eng = mbr_pw.search(/[a-z]/ig);
 					let spe = mbr_pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
@@ -251,7 +251,7 @@
 					if(pw != pw_chck){
 						alert("비밀번호 확인이 일치하지 않습니다.");
 						return;
-					}
+					} */
 					//비밀번호 유효성 검사 End--------------------------------------
 					
 					
@@ -298,7 +298,7 @@
 					
 
 
-					/* joinForm.submit(); */
+					joinForm.submit();
 				});
 				
 

@@ -23,7 +23,14 @@
 	
 	<resources mapping="/css/**" location="/resources/css/" />
 	<resources mapping="/js/**" location="/resources/js/" />
-
+	
+	<!-- 에디터 -->
+	<resources mapping="/ckeditor/**" location="/resources/bower_components/ckeditor/" />
+	
+	 
+	<resources mapping="/upload/**" location="/resources/upload/" /> 
+	
+	
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
@@ -37,6 +44,10 @@
 	
 	<!-- 파일업로드 bean설정. id="multipartResolver" 예약어-->
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></beans:bean>
+	
+	<beans:bean id="uploadPath" class="java.lang.String">
+		<beans:constructor-arg value="c:\\LYS\\upload\\"></beans:constructor-arg>
+	</beans:bean>
 	
 	
 	

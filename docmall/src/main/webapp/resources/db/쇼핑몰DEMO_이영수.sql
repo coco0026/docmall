@@ -27,9 +27,12 @@ CREATE TABLE MEMBER_TBL (
     MBR_CNTN_DATE       DATE                    -- 최근 접속시간(로그인시간)    
 );
 
-drop table MEMBER_DETAIL_TBL;
+--drop table MEMBER_DETAIL_TBL;
+--delete from MEMBER_TBL;
 
 SELECT * FROM MEMBER_TBL;
+SELECT * FROM MEMBER_DETAIL_TBL;
+
 INSERT INTO MEMBER_TBL(MBR_ID, MBR_NM, MBR_PW, MBR_ZIP, MBR_ADDR, MBR_DADDR, MBR_TELNO, MBR_EML_ADDR, MBR_EML_ADDR_YN)
 VALUES(#{MBR_ID},#{MBR_NM},#{MBR_PW},#{MBR_ZIP},#{MBR_ADDR},#{MBR_DADDR},#{MBR_TELNO},#{MBR_EML_ADDR},#{MBR_EML_ADDR_YN});
 
@@ -52,8 +55,50 @@ CREATE TABLE COMMON_CODE_TBL (
 CREATE TABLE COMMON_CODE_DETAIL_TBL (
     COMMON_CODE_CHILD     NUMBER                  PRIMARY KEY, -- 자식코드
     COMMON_CODE           NUMBER                  , -- 그룹코드
-    COMMON_CODE_NM        VARCHAR2(50)            NOT NULL -- 코 드 명
+    COMMON_CODE_CHILD_NM  VARCHAR2(50)            NOT NULL -- 코 드 명
 );
+SELECT COMMON_CODE, COMMON_CODE_CHILD_NM, COMMON_CODE_CHILD FROM COMMON_CODE_DETAIL_TBL WHERE 
+COMMON_CODE = 10000 ;
+
+SELECT A.COMMON_CODE, 
+        A.COMMON_CODE_NM, 
+        B.COMMON_CODE_CHILD, 
+        B.COMMON_CODE_CHILD_NM
+FROM COMMON_CODE_TBL A, COMMON_CODE_DETAIL_TBL B;
+WHERE A.COMMON_CODE = B.COMMON_CODE;
+
+SELECT COMMON_CODE,
+			   COMMON_CODE_NM
+		FROM COMMON_CODE_TBL;	
+
+select * from COMMON_CODE_TBL;
+
+select * from COMMON_CODE_DETAIL_TBL;
+
+delete from COMMON_CODE_TBL;
+
+INSERT INTO COMMON_CODE_TBL(COMMON_CODE,COMMON_CODE_NM)VALUES(10000,'TOP');
+INSERT INTO COMMON_CODE_TBL(COMMON_CODE,COMMON_CODE_NM)VALUES(20000,'PANTS');
+INSERT INTO COMMON_CODE_TBL(COMMON_CODE,COMMON_CODE_NM)VALUES(30000,'OUTER');
+
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(10001,10000,'반팔티');
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(10002,10000,'긴팔티');
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(10003,10000,'셔츠');
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(10004,10000,'후드티&#38;맨투맨');
+
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(20001,20000,'반바지');
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(20002,20000,'청바지');
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(20003,20000,'면바지');
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(20004,20000,'트레이닝바지');
+
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(30001,30000,'코트');
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(30002,30000,'패딩');
+INSERT INTO COMMON_CODE_DETAIL_TBL(COMMON_CODE_CHILD,COMMON_CODE,COMMON_CODE_NM)VALUES(30003,30000,'자켓');
+
+
+
+commit;
+
 
 select * from COMMON_CODE_TBL;
 INSERT INTO COMMON_CODE_TBL(COMMON_CODE,COMMON_CODE_NM)
@@ -114,26 +159,31 @@ WHERE a.common_code = B.common_code and
 
 --상품 테이블
 CREATE TABLE GOODS_TBL (
-    GDS_CODE            NUMBER                  PRIMARY KEY, --상품번호
-    CATE_CODE           NUMBER                  , -- 카테고리 코드1
-    CATE_CODE_PRT       NUMBER                  , -- 카테고리 코드 2
+    GDS_CODE            NUMBER                  CONSTRAINT PK_GDS_CODE PRIMARY KEY, --상품번호
+    CATE_CODE           NUMBER                  NOT NULL, -- 카테고리 코드1
+    CATE_CODE_PRT       NUMBER                  NOT NULL, -- 카테고리 코드 2
     GDS_NM              VARCHAR2(50)            NOT NULL, --상품명
-    GDS_CN              CLOB                    NOT NULL, -- 상품소개
-    GDS_IMG             VARCHAR2(50)            NOT NULL, -- 상품이미지  
+    GDS_CN              VARCHAR2(3000)          NOT NULL, -- 상품소개
+    GDS_IMG             VARCHAR2(50)            NOT NULL, -- 상품이미지
+    GDS_PRICE           NUMBER                  NOT NULL, --가격
+    GDS_DSCNT           NUMBER                  NOT NULL, --할인율
+    GDS_CNT             NUMBER                  NOT NULL, --상품수
+    GDS_PRCHS_YN        CHAR(1)                 NOT NULL, --구매가능 여부
+    GDS_SALE_CNT        NUMBER                  DEFAULT 0 NOT NULL, --판매수량
     GDS_REG_DATE        DATE                    DEFAULT SYSDATE NOT NULL, -- 등록날짜
     GDS_UPDATE_DATE     DATE                    DEFAULT SYSDATE NOT NULL -- 수정일
 );
 
 
 --상품 재고 테이블
-CREATE TABLE GOODS_STOCK_TBL (
-    GDS_CODE            NUMBER                  PRIMARY KEY, --상품번호
-    GDS_PRICE           NUMBER                  NOT NULL, --가격
-    GDS_DSCNT           MEMBER                  NOT NULL, --할인율
-    GDS_CNT             NUMBER                  NOT NULL, --상품수
-    GDS_PRCHS_YN        char(1)                 NOT NULL, --구매가능 여부
-    GDS_SALE_CNT        NUMBER                  DEFAULT 0 NOT NULL --판매수량
-);
+--CREATE TABLE GOODS_STOCK_TBL (
+--    GDS_CODE            NUMBER                  PRIMARY KEY, --상품번호
+--    GDS_PRICE           NUMBER                  NOT NULL, --가격
+--    GDS_DSCNT           MEMBER                  NOT NULL, --할인율
+--    GDS_CNT             NUMBER                  NOT NULL, --상품수
+--    GDS_PRCHS_YN        char(1)                 NOT NULL, --구매가능 여부
+--    GDS_SALE_CNT        NUMBER                  DEFAULT 0 NOT NULL --판매수량
+--);
 
 --장바구니 테이블
 CREATE TABLE SHOPPING_BASKET_TBL (
@@ -226,7 +276,10 @@ CREATE TABLE MANAGER_TBL (
     MNGR_CNTN_DATE      DATE                    NOT NULL -- 최근 접속시간
 );
 
+INSERT INTO MANAGER_TBL(MNGR_ID,MNGR_PW,MNGR_NM,MNGR_CNTN_DATE)
+VALUES('admin','$2a$10$lMX0lTdK2dAxpIR8B3KVQepSjirIkne0l79JDQfMJHUNkazSOivp.','관리자',sysdate);
 
+commit;
 
 
 --회원 테이블, 회원상세 테이블 생성 프로시저
@@ -331,21 +384,9 @@ create or replace PROCEDURE P_MEMBER_ADD (
 END P_MEMBER_ADD;
 
 
-call P_MEMBER_ADD( 
-        #{mbrId},           
-        #{mbrName},          
-        #{mbrPwd},           
-        #{mbrZipCode},          
-        #{mbrAddr1},           
-        #{mbrAddr2},       
-        #{mbrCTEL},      
-        #{mbrMail},      
-        #{mbrAddrYn},  
-        #{errCode, mode=OUT, jdbcType=VARCHAR},
-		#{errMsg, mode=OUT, jdbcType=VARCHAR}
-		)}
-    );
-
+ call P_MEMBER_ADD( 'test', '테스트', '$2a$10$lMX0lTdK2dAxpIR8B3KVQepSjirIkne0l79JDQfMJHUNkazSOivp.', 
+'11900', '경기 구리시 담터길32번길 111', '이젠빌딩', '010-1234-1234', 'coco0026@naver.com', 'Y', '', 
+'' );
 
 
 
