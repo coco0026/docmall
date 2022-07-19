@@ -37,12 +37,11 @@
 	<script>
 		/* 프로세스 완료 메시지 */
 		let msg = "${msg}";
-		alert(msg);
 		if(msg == "idFail"){
 			alert("아이디를 확인하세요.");
 		}else if(msg == "passwdFail"){
 			alert("비밀번호를 확인하세요.");
-		}else 
+		}
 	</script>
     
   </head>

@@ -37,7 +37,7 @@ public interface MemberMapper {
 	void changeImsiPW(@Param("mbr_id") String mbr_id, @Param("enc_mbr_pw") String enc_mbr_pw);
 	
 	//회원정보 수정하기
-	void modify(MemberVO vo);
+	Boolean modify(MemberVO vo);
 	
 	
 }

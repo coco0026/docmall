@@ -36,7 +36,7 @@ public interface MemberService {
 	void changeImsiPW(String mbr_id, String enc_mbr_pw);
 	
 	//회원정보 업데이트
-	void modify(MemberVO vo);
+	Boolean modify(MemberVO vo);
 	
 
 }

@@ -24,10 +24,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.docmall.domain.CommonCodeVO;
+import com.docmall.domain.ProductVO;
+import com.docmall.service.AdminProductService;
 import com.docmall.service.AdminService;
 import com.docmall.service.CommonCodeService;
+import com.docmall.util.UploadFileUtils;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -38,10 +42,13 @@ import lombok.extern.log4j.Log4j;
 public class AdminProductController {
 	
 	@Resource(name = "uploadPath") //Bean중에 uploadPath bean 객체를 찾아, 아래 변수에 주입
-	private String uploadPath;
+	private String uploadPath; // C:/LYS/upload
 	
 	@Setter(onMethod_ = {@Autowired})
 	private CommonCodeService commonCodeService;
+	
+	@Setter(onMethod_ = {@Autowired})
+	private AdminProductService Service;
 	
 	//상품 등록 폼 
 	@GetMapping("/adminProductInsert")
@@ -50,10 +57,13 @@ public class AdminProductController {
 		model.addAttribute("cateList", commonCodeService.getCommonCode());//1차 카테고리 정보
 	}
 	
+	//정적 상수
+	private static final int ONE = 1;
+	
 	//2차카테고리 정보
 	@ResponseBody
 	@GetMapping("/subCategoryList/{common_code}") ///subCategoryList/{1차카테고리코드(REST)}
-	public ResponseEntity<List<CommonCodeVO>> subCategoryList(@PathVariable("common_code") Integer common_code){ //@PathVariable 경로 주소의 일부분을 파라미터로 참조시 사용
+	public ResponseEntity<List<CommonCodeVO>> subCategoryList(@PathVariable("common_code") String common_code){ //@PathVariable 경로 주소의 일부분을 파라미터로 참조시 사용
 		
 		ResponseEntity<List<CommonCodeVO>> entity = null;
 		
@@ -125,10 +135,36 @@ public class AdminProductController {
 	}
 	
 	
-	
-	
-	//상품 저장
-	
+
+	//상품저장
+	@PostMapping("/adminProductInsert")
+	public String adminProductInsert(ProductVO vo, RedirectAttributes rttr) {
+		
+		
+		//파일 업로드 작업
+		String uploadDateFolderPath = UploadFileUtils.getFolder();
+		vo.setGds_img_folder(uploadDateFolderPath); //날자 폴더명
+		vo.setGds_img(UploadFileUtils.uploadFile(uploadPath, uploadDateFolderPath, vo.getUploadFile()));
+		
+		
+		//Gds_prchs_yn의 파라미터가 Y가 아닐시 N
+		if(vo.getGds_prchs_yn() == null) {
+			vo.setGds_prchs_yn("N");
+		}
+		
+		log.info("상품등록 정보 : " + vo); 
+		
+		
+		//상품정보 저장
+		if(Service.productInsert(vo) == ONE) {
+			rttr.addFlashAttribute("msg", "GoodsSuccess");//로그인 완료시 메시지
+		}else{
+			rttr.addFlashAttribute("msg", "GoodsFail");//로그인 완료시 메시지
+		}
+		
+		
+		return "redirect:/admin/product/adminProductInsert";
+	}
 	
 
 }

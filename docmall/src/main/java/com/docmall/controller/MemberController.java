@@ -411,9 +411,15 @@ public class MemberController {
 			vo.setMbr_eml_addr_yn("N");
 		}
 		
-		service.modify(vo);
 		
-		return "redirect:/";
+		if(service.modify(vo)) {
+			rttr.addFlashAttribute("msg", "modifySuccess");//로그인 완료시 메시지
+		}else {
+			rttr.addFlashAttribute("msg", "modifyFail");//로그인 완료시 메시지
+		}
+		
+		
+		return "redirect:/member/modify";
 	}
 	
 	

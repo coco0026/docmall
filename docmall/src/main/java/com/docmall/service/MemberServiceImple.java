@@ -85,9 +85,17 @@ public class MemberServiceImple implements MemberService {
 
 	//회원정보 업데이트
 	@Override
-	public void modify(MemberVO vo) {
+	public Boolean modify(MemberVO vo) {
 		// TODO Auto-generated method stub
-		mapper.modify(vo);
+		Boolean result = false;
+		
+		if(mapper.modify(vo)) {
+			result = true;
+		}else {
+			result = false;
+		}
+		
+		return result;
 	}
 
 

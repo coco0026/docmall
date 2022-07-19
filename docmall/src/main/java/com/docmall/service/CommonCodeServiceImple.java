@@ -14,12 +14,6 @@ public class CommonCodeServiceImple implements CommonCodeService {
 	@Autowired
 	private CommonCodeMapper mapper;
 
-	//자식코드로 자식테이블 정보
-	@Override
-	public CommonCodeVO commonCodeDetailSel(Long common_code_detail) {
-		// TODO Auto-generated method stub
-		return mapper.commonCodeDetailSel(common_code_detail);
-	}
 
 	@Override
 	public List<CommonCodeVO> getCommonCode() {
@@ -28,7 +22,7 @@ public class CommonCodeServiceImple implements CommonCodeService {
 	}
 
 	@Override
-	public List<CommonCodeVO> getSubCommonCode(Integer common_code) {
+	public List<CommonCodeVO> getSubCommonCode(String common_code) {
 		// TODO Auto-generated method stub
 		return mapper.getSubCommonCode(common_code);
 	}

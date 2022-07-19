@@ -17,13 +17,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	
 	
 	<script>
-		/* 프로세스 완료 메시지 */
-		let msg = "${msg}";
-		if(msg == "GoodsSuccess"){
-			alert("상품이 정상적으로 등록되었습니다.");
-		}else if(msg == "GoodsFail"){
-			alert("상품등록에 실패하였습니다 관리자에게 문의하세요.");
-		}
+	
+	
 	</script>
 	
 </head>
@@ -59,7 +54,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 			<div class="box box-primary">
 				<form id="productForm" action="adminProductInsert" method="post" enctype="multipart/form-data">
 					<div class="box-header">
-						REGISTER PRODUCT				
+						REGISTER MENU				
 					</div>
 					<div class="box-body">
 					  <div class="form-group row">
@@ -91,38 +86,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 					    </div>
 					  </div>
 					  
-					  <div class="form-group row">
-					    <label for="gds_dscnt" class="col-sm-2 col-form-label">할인율</label>
-					    <div class="col-sm-4">
-					      <input type="text" class="form-control" id="gds_dscnt" name="gds_dscnt">
-					    </div>
-					    <label for="gds_cnt" class="col-sm-2 col-form-label">상품수</label>
-					    <div class="col-sm-4">
-					      <input type="text" class="form-control" id="gds_cnt" name="gds_cnt">
-					    </div>
-					  </div>
-					  <div class="form-group row">
-					    <label for="gds_img" class="col-sm-2 col-form-label">상품 이미지</label>
-					    <div class="col-sm-4">
-					      <input type="file" class="form-control" id="uploadFile" name="uploadFile">
-					    </div>
-					    <label class="form-check-label col-sm-2" for="gds_prchs_yn">구매가능 여부</label>
-						<div class="col-sm-4 text-left">
-						  <input class="form-check-input" type="checkbox" value="Y" id="gds_prchs_yn" name="gds_prchs_yn">
-						</div>	
-					  </div>
-					  <div class="form-group row">
-					    <label for="gds_cn" class="col-sm-2 col-form-label">상품설명</label>
-					    <div class="col-sm-10">
-					      <textarea class="form-control" name="gds_cn" id="gds_cn" rows="3"></textarea>
-					    </div>
-					  </div>
 					</div>
 					<div class="box-footer">
 						<div class="form-group">
 							<ul class="uploadedList"></ul>
 						</div>
-							REGISTER PRODUCT				
+							REGISTER MENU					
 						<div class="form-group row">
 							<div class="col-sm-12 text-center">
 							 <button type="submit" class="btn btn-dark" id="btnInsert">상품등록</button>

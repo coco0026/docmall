@@ -205,258 +205,274 @@
 	<script>
 	/* 회원가입  */
 	//html 문서와 내용을 브러우저가 읽고 난 이후 동작되는 특징
-			$(document).ready(function(){
+		$(document).ready(function(){
 
-				let joinForm =  $("#joinForm");
-				
+			//유효성 검사
+			
+			let kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글체크
 
-				//회원가입
-				$("#btnJoin").on("click", function(){
+			let num = /[0-9]/g;
+			let eng = /[a-z]/ig;
+			let spe = /[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi;
 
-					//유효성 검사
-
-					//아이디 중복 체크 사용여부.
-					if(!isIdCheck){
-						alert("아이디 중복확인을 해주세요")
-						return;
-
-					}
-					
-					
-					//비밀번호 유효성 검사 Start------------------------------
-					/* let mbr_pw = $("#mbr_pw").val();
-					let num = mbr_pw.search(/[0-9]/g);
-					let eng = mbr_pw.search(/[a-z]/ig);
-					let spe = mbr_pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
-					
-					if(mbr_pw.length < 8 || mbr_pw.length > 15){
-						alert("비밀번호는 8자리에서 15자리 이내로 입력해주세요.");
-						$("#mbr_pw").focus();
-						return;
-					  
-					}else if(mbr_pw.search(/\s/) != -1){
-						alert("비밀번호는 공백 없이 입력해주세요.");
-						$("#mbr_pw").focus();
-						return;
-					  
-					}else if(num < 0 || eng < 0 || spe < 0 ){
-					 	alert("비밀번호는 영문,숫자, 특수문자를 혼합하여 입력해주세요.");
-					 	$("#mbr_pw").focus();
-						return;
-					}
-					
-					//비밀번호 확인 일치
-					let pw_chck = $("#mbr_pw_chck").val();
-					let pw = $("#mbr_pw").val();
-					if(pw != pw_chck){
-						alert("비밀번호 확인이 일치하지 않습니다.");
-						return;
-					} */
-					//비밀번호 유효성 검사 End--------------------------------------
-					
-					
-					//이름 입력 확인
-					if($("#mbr_nm").val() == "") {
-						alert("이름을 입력하세요");
-						$("#mbr_nm").focus();
-						return;
-					}
-					
-					//메일 인증 확인 여부
-					if(!isAuthCode){
-						alert("메일 인증확인을 해주세요")
-						return;
-						
-					}
-					
-					
-					//////////주소 유효성검사 수정 해야함
-					//휴대폰번호 이메일 유효성검사 작업해야함
-					
-					
-					//휴대폰번호 중복 체크
-					if(!isTelNumCheck){
-						alert("휴대폰번호 확인을 해주세요")
-						$("#mbr_telno").focus();
-						return;
-					}
-					
-					//주소 유효성검사 Start------------------------
-					if($("#mbr_zip").val() == "") {
-						alert("주소를 입력하세요");
-						return;
-					}
-					
-					if($("#mbr_daddr").val() == "") {
-						alert("상세주소를 입력하세요");
-						$("#mbr_daddr").focus();
-						return;
-					}
-					//주소 유효성검사 End------------------------
-					
-					
-					
-
-
-					joinForm.submit();
-				});
-				
-
+			let joinForm =  $("#joinForm");
 			
 
-				// ID중복체크			
-				let isIdCheck = false; // ID중복체크 플래그 변수
-				$("#btnIdCheck").on("click", function(){				
+			//회원가입
+			$("#btnJoin").on("click", function(){
+
+				
+				
+				
+
+				//아이디 중복 체크 사용여부.
+				/* if(!isIdCheck){
+					alert("아이디 중복확인을 해주세요")
+					return;
+
+				}
+				
+				
+				//비밀번호 유효성 검사 Start------------------------------
+				// let mbr_pw = $("#mbr_pw").val();
+				// let num = mbr_pw.search(/[0-9]/g);
+				// let eng = mbr_pw.search(/[a-z]/ig);
+				// let spe = mbr_pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+				let mbr_pw = $("#mbr_pw").val();
+				if(mbr_pw.length < 8 || mbr_pw.length > 15){
+					alert("비밀번호는 8자리에서 15자리 이내로 입력해주세요.");
+					$("#mbr_pw").focus();
+					return;
 					
-					//아이디 입력 확인
-					if($("#mbr_id").val() == "") {
-						alert("아이디를 입력하세요");
-						$("#mbr_id").focus();
-						return;
+				}else if(mbr_pw.search(/\s/) != -1){
+					alert("비밀번호는 공백 없이 입력해주세요.");
+					$("#mbr_pw").focus();
+					return;
+					
+				}else if(mbr_pw.search(num) < 0 || mbr_pw.search(eng) < 0 || mbr_pw.search(spe) < 0 ){
+					alert("비밀번호는 영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+					$("#mbr_pw").focus();
+					return;
+				}
+				
+				//비밀번호 확인 일치
+				let pw_chck = $("#mbr_pw_chck").val();
+				let pw = $("#mbr_pw").val();
+				if(pw != pw_chck){
+					alert("비밀번호 확인이 일치하지 않습니다.");
+					return;
+				}  */
+				//비밀번호 유효성 검사 End--------------------------------------
+				
+				let mbrNm = $("#mbr_nm").val();
+				//이름 입력 확인
+				if(mbrNm == "") {
+					alert("이름을 입력하세요");
+					$("#mbr_nm").focus();
+					return;
+				}
+				
+				
+				//메일 인증 확인 여부
+				if(!isAuthCode){
+					alert("메일 인증확인을 해주세요")
+					return;
+					
+				} 
+				
+				
+				//////////주소 유효성검사 수정 해야함
+				//휴대폰번호 이메일 유효성검사 작업해야함
+				
+				
+				//휴대폰번호 중복 체크
+				if(!isTelNumCheck){
+					alert("휴대폰번호 확인을 해주세요")
+					$("#mbr_telno").focus();
+					return;
+				}
+				
+				//휴대폰번호 유효성검사
+				let phonenum = $('#mbr_telno').val();
+				let regPhone = /(01[0|1|6|9|7])[-](\d{3}|\d{4})[-](\d{4}$)/g;
+				if(!regPhone.test(phonenum)){
+					alert('잘못된 휴대폰 번호입니다. 하이픈기호(-)를 추가하여 형식에 맞게 작성해주세요.');
+					$('#mbr_telno').focus();
+					return false;    
+				}
+				
+				
+				
+				//주소 유효성검사 Start------------------------
+				let mbrZip = $('input[name=mbr_zip]').val()
+				let mbr_daddr = $('input[name=mbr_daddr]').val()
+				if(mbrZip == "") {
+					alert("우편번호를 입력하세요");
+					return;
+				}
+				
+				if(mbr_daddr == "") {
+					alert("상세주소를 입력하세요");
+					$("#mbr_daddr").focus();
+					return;
+				}
+				//주소 유효성검사 End------------------------
+				
+				
+				
+
+
+				/* joinForm.submit(); */
+			});
+			
+
+		
+
+			// ID중복체크			
+			let isIdCheck = false; // ID중복체크 플래그 변수
+			$("#btnIdCheck").on("click", function(){				
+				
+				//아이디 입력 확인
+				if($("#mbr_id").val() == "") {
+					alert("아이디를 입력하세요");
+					$("#mbr_id").focus();
+					return;
+				}
+			
+
+				$.ajax({
+					url: '/member/idCheck',
+					type: "get",
+					dataType: 'text',
+					data:{ mbr_id : $("#mbr_id").val()},
+					success : function(result){
+
+						console.log(result);
+						$("#idCheckStatus").css({'display':'inline'});
+						
+						if(result == "yes"){ //ID사용 가능						
+							$("#idCheckStatus").html("<p class='text-muted'><small>"+$("#mbr_id").val()+"는 사용 가능한 아이디입니다.</small></p>");
+							isIdCheck = true;
+						}else{ //ID사용 불가능
+							$("#idCheckStatus").html("<p class='text-muted'><small>"+$("#mbr_id").val()+"는 사용 불가능한 아이디입니다.</small></p>");
+							isIdCheck = false;
+						}
+
 					}
-				
+				})
 
-					$.ajax({
-						url: '/member/idCheck',
-						type: "get",
-						dataType: 'text',
-						data:{ mbr_id : $("#mbr_id").val()},
-						success : function(result){
+			});
+			
+			
+			// 휴대폰번호 중복체크
+			let isTelNumCheck = false; //휴대폰번호 플래그
+			$("#mbr_telno").change(function(){
 
-							console.log(result);
-							$("#idCheckStatus").css({'display':'inline'});
-							
-							if(result == "yes"){ //ID사용 가능						
-								$("#idCheckStatus").html("<p class='text-muted'><small>"+$("#mbr_id").val()+"는 사용 가능한 아이디입니다.</small></p>");
-								isIdCheck = true;
-							}else{ //ID사용 불가능
-								$("#idCheckStatus").html("<p class='text-muted'><small>"+$("#mbr_id").val()+"는 사용 불가능한 아이디입니다.</small></p>");
-								isIdCheck = false;
-							}
+				$.ajax({
+					url: '/member/telNoCheck',
+					type: "get",
+					dataType: 'text',
+					data:{ mbr_telno : $("#mbr_telno").val()},
+					success : function(result){
 
+						console.log(result);
+						$("#telNoCheckStatus").css({'display':'inline'});
+						
+						if(result == "yes"){ 					
+							$("#telNoCheckStatus").html("<p class='text-muted'><small>"+$("#mbr_telno").val()+"는 사용 가능한 휴대폰 번호입니다.</small></p>");
+							isTelNumCheck = true;
+						}else{ 
+							$("#telNoCheckStatus").html("<p class='text-muted'><small>"+$("#mbr_telno").val()+"는 이미 등록된 휴대폰 번호입니다.</small></p>");
+							isTelNumCheck = false;
 						}
-					})
 
-				});
-				
-				
-				// 휴대폰번호 중복체크
-				let isTelNumCheck = false; //휴대폰번호 플래그
-				$("#mbr_telno").change(function(){
-
-					$.ajax({
-						url: '/member/telNoCheck',
-						type: "get",
-						dataType: 'text',
-						data:{ mbr_telno : $("#mbr_telno").val()},
-						success : function(result){
-
-							console.log(result);
-							$("#telNoCheckStatus").css({'display':'inline'});
-							
-							if(result == "yes"){ 					
-								$("#telNoCheckStatus").html("<p class='text-muted'><small>"+$("#mbr_telno").val()+"는 사용 가능한 휴대폰 번호입니다.</small></p>");
-								isTelNumCheck = true;
-							}else{ 
-								$("#telNoCheckStatus").html("<p class='text-muted'><small>"+$("#mbr_telno").val()+"는 이미 등록된 휴대폰 번호입니다.</small></p>");
-								isTelNumCheck = false;
-							}
-
-						}
-					})
-
-
-
-				});
-
-
-				
-				//메일 인증코드 요청
-				$("#btnAuthcode").on("click",function(){
-					
-					if($("#mbr_eml_addr").val() == ""){
-						alert("메일주소를 입력하세요.");
-						return;
 					}
-										
-					
-					let mailFlag = true;
-					$.ajax({
-						url: '/member/mailCheck',
-						type: "get",
-						dataType: 'text',
-						data:{ mbr_eml_addr : $("#mbr_eml_addr").val()},
-						async : false, //ajax 동기방식으로 변경
-						success : function(result){
-							console.log(result);							
-							if(result == "no"){ 	
-								alert("이미 등록된 이메일 주소입니다.");
-								mailFlag = false;
-								return;
-							}
+				})
 
+
+
+			});
+
+
+			
+			//메일 인증코드 요청
+			$("#btnAuthcode").on("click",function(){
+				
+				if($("#mbr_eml_addr").val() == ""){
+					alert("메일주소를 입력하세요.");
+					return;
+				}
+									
+				
+				let mailFlag = true;
+				$.ajax({
+					url: '/member/mailCheck',
+					type: "get",
+					dataType: 'text',
+					data:{ mbr_eml_addr : $("#mbr_eml_addr").val()},
+					async : false, //ajax 동기방식으로 변경
+					success : function(result){
+						console.log(result);							
+						if(result == "no"){ 	
+							alert("이미 등록된 이메일 주소입니다.");
+							mailFlag = false;
+							return;
 						}
-					})
-					
-					//등록된 메일주소일때 진행 불가
-					if(mailFlag == false){
-						return;
+
 					}
+				})
+				
+				//등록된 메일주소일때 진행 불가
+				if(mailFlag == false){
+					return;
+				}
 
 
-					$.ajax({
-						url: '/email/send',
-						type: 'get',
-						dataType: 'text',
-						data:{ receiveMail : $("#mbr_eml_addr").val()},
-						success : function(result){
-							if(result == "success"){
-								alert("메일이 발송되었습니다. 인증코드를 확인하세요.");
-							}else{
-								alert("메일발송이 실패되어, 메일주소 확인 또는 관리자에게 문의 바랍니다.");
-							}
+				$.ajax({
+					url: '/email/send',
+					type: 'get',
+					dataType: 'text',
+					data:{ receiveMail : $("#mbr_eml_addr").val()},
+					success : function(result){
+						if(result == "success"){
+							alert("메일이 발송되었습니다. 인증코드를 확인하세요.");
+						}else{
+							alert("메일발송이 실패되어, 메일주소 확인 또는 관리자에게 문의 바랍니다.");
 						}
-							
-
-					});
+					}
+						
 
 				});
 
-				//메일인증 확인
-				let isAuthCode = false; //메일 인증확인 플래그 변수
-				$("#btnMailConfirm").on("click",function(){
+			});
 
-					let authCode = $("#mailAuthcode").val();
+			//메일인증 확인
+			let isAuthCode = false; //메일 인증확인 플래그 변수
+			$("#btnMailConfirm").on("click",function(){
 
-					$.ajax({
-						url: '/member/confirmAuthCode',
-						type: 'post',
-						dataType: 'text',
-						data:{ userAuthCode : authCode},
-						success : function(result){
-							if(result == 'success'){
-								alert("인증이 완료되었습니다.");
-								isAuthCode = true;
-							}else if(result == 'fail'){
-								alert("인증코드를 확인하세요.");
-								isAuthCode = false;
-							}
+				let authCode = $("#mailAuthcode").val();
+
+				$.ajax({
+					url: '/member/confirmAuthCode',
+					type: 'post',
+					dataType: 'text',
+					data:{ userAuthCode : authCode},
+					success : function(result){
+						if(result == 'success'){
+							alert("인증이 완료되었습니다.");
+							isAuthCode = true;
+						}else if(result == 'fail'){
+							alert("인증코드를 확인하세요.");
+							isAuthCode = false;
 						}
-							
-
-					});
-
+					}
+						
 
 				});
-					
 
 
-
-
-
-
-
-
+			});
+				
 
 				
 			

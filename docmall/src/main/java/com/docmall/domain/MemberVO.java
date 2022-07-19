@@ -23,7 +23,7 @@ public class MemberVO {
 	
 	//MEMBER_DETAIL_TBL
 	private int mbr_point_ny; //적립금
-	private Long mbr_grade_code; //회원등급
+	private String mbr_grade_code; //회원등급
 	private int mbr_accumulate_my; //누적금액
 	
 	//프로시저 에러 OUT변수

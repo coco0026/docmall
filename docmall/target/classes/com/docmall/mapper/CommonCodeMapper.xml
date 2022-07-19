@@ -3,29 +3,26 @@
 <mapper namespace="com.docmall.mapper.CommonCodeMapper">
 
 
-	<!-- 자식코드로 자식테이블 셀렉트 -->
-	<select id="commonCodeDetailSel" parameterType="long" resultType="com.docmall.domain.CommonCodeVO">
-		SELECT COMMON_CODE_DETAIL, 
-			   COMMON_CODE, 
-			   COMMON_CODE_DETAIL_NM
-		FROM COMMON_CODE_DETAIL_TBL 
-		WHERE COMMON_CODE_DETAIL = #{common_code_detail}
-	</select>
 	
 	<!-- 그룹코드 셀렉트 -->
 	<select id="getCommonCode" resultType="com.docmall.domain.CommonCodeVO">
 		SELECT COMMON_CODE,
-			   COMMON_CODE_NM
-		FROM COMMON_CODE_TBL		
+			   COMMON_CODE_NM,
+			   COMMON_CODE_USE_YN
+		FROM COMMON_CODE_TBL
+		WHERE SUBSTR(COMMON_CODE, 1, 1) = 'C' AND
+			  COMMON_CODE_USE_YN = 'Y'
 	</select>
 	
 	<!-- 자식코드 셀렉트 -->
 	<select id="getSubCommonCode" resultType="com.docmall.domain.CommonCodeVO">
 		SELECT COMMON_CODE,
 			   COMMON_CODE_CHILD_NM,
-			   COMMON_CODE_CHILD
+			   COMMON_CODE_CHILD,
+			   COMMON_CODE_CHILD_USE_YN
 		FROM COMMON_CODE_DETAIL_TBL		
-		WHERE COMMON_CODE = #{common_code}
+		WHERE COMMON_CODE = #{common_code} AND
+			  COMMON_CODE_CHILD_USE_YN = 'Y'
 	</select>
 	
 	

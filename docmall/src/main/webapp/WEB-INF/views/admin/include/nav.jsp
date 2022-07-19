@@ -37,6 +37,18 @@
         <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         
         <li class="treeview">
+          <a href="#"><i class="fa fa-link"></i> <span>메뉴관리</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/admin/menu/adminMenuInsert">메뉴추가</a></li>
+            <li><a href="#">메뉴수정</a></li>
+          </ul>
+        </li>
+        
+        <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>회원관리</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -55,7 +67,7 @@
               </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#">상품등록</a></li>
+            <li><a href="/admin/product/adminProductInsert">상품등록</a></li>
             <li><a href="#">상품목록</a></li>
           </ul>
         </li>

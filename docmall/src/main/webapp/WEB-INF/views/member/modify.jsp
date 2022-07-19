@@ -90,7 +90,19 @@
 	    
 	</script>
 	<!-- 다음API Script -->
-
+	
+	<script>
+	
+	
+	
+		/* 프로세스 완료 메시지 */
+		let msg = "${msg}";
+		if(msg == "modifySuccess"){
+			alert("회원정보가 성공적으로 수정되었습니다");
+		}else if(msg == "modifyFail"){
+			alert("회원정보 수정이 실패하였습니다. 관리자에게 문의하세요");
+		}
+	</script>
     
   </head>
   
@@ -203,9 +215,41 @@
 
 				let modifyForm =  $("#modifyForm");
 
-				//회원가입
+				//회원수정
 				$("#btnModify").on("click", function(){
-
+					
+					//비밀번호 유효성 검사 Start------------------------------
+					let mbr_pw = $("#mbr_pw").val();
+					let num = mbr_pw.search(/[0-9]/g);
+					let eng = mbr_pw.search(/[a-z]/ig);
+					let spe = mbr_pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+					
+					if(mbr_pw.length < 8 || mbr_pw.length > 15){
+						alert("비밀번호는 8자리에서 15자리 이내로 입력해주세요.");
+						$("#mbr_pw").focus();
+						return;
+					  
+					}else if(mbr_pw.search(/\s/) != -1){
+						alert("비밀번호는 공백 없이 입력해주세요.");
+						$("#mbr_pw").focus();
+						return;
+					  
+					}else if(num < 0 || eng < 0 || spe < 0 ){
+					 	alert("비밀번호는 영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+					 	$("#mbr_pw").focus();
+						return;
+					}
+					
+					//비밀번호 확인 일치
+					let pw_chck = $("#mbr_pw_chck").val();
+					let pw = $("#mbr_pw").val();
+					if(pw != pw_chck){
+						alert("비밀번호 확인이 일치하지 않습니다.");
+						return;
+					} 
+					//비밀번호 유효성 검사 End--------------------------------------
+					
+					
 
 
 
