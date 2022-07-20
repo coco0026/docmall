@@ -29,5 +29,87 @@
 			#{gds_prchs_yn}
 		)
 	</insert>
+	
+	
+	<!-- 
+		 검색 조건 :  카테고리1(TOP,PANTS....)	C1	
+	 		           카테고리2(반팔티,긴팔티....)	C2	
+	 		           상품이름					N	
+	 		            
+	-->
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'C1'.toString()">
+							CATE_CODE LIKE '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'C2'.toString()">
+							CATE_CODE_PRT LIKE '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'N'.toString()">
+							GDS_NM LIKE '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<!-- 1)데이타(목록)  /*+ INDEX_DESC(GOODS_TBL PK_GDS_CODE)*/(인덱스헌트)-->
+	<select id="getProductList" parameterType="com.docmall.dto.Criteria" resultType="com.docmall.domain.ProductVO">
+		<![CDATA[
+		SELECT RN, 
+			   GDS_CODE, 
+			   CATE_CODE, 
+			   CATE_CODE_PRT, 
+			   GDS_NM, 
+			   GDS_CN, 
+			   GDS_IMG, 
+			   GDS_IMG_FOLDER, 
+			   GDS_PRICE, 
+			   GDS_DSCNT, 
+			   GDS_CNT, 
+			   GDS_PRCHS_YN, 
+			   GDS_SALE_CNT, 
+			   GDS_REG_DATE, 
+			   GDS_UPDATE_DATE
+		FROM (
+		      SELECT  /*+ INDEX_DESC(GOODS_TBL PK_GDS_CODE)*/ ROWNUM RN, 
+		            GDS_CODE, 
+		            CATE_CODE, 
+		            CATE_CODE_PRT, 
+		            GDS_NM, 
+		            GDS_CN, 
+		            GDS_IMG, 
+		            GDS_IMG_FOLDER, 
+		            GDS_PRICE, 
+		            GDS_DSCNT, 
+		            GDS_CNT, 
+		            GDS_PRCHS_YN, 
+		            GDS_SALE_CNT, 
+		            GDS_REG_DATE, 
+		            GDS_UPDATE_DATE 
+		      FROM GOODS_TBL
+		      WHERE                                          
+		]]>    
+			  <include refid="criteria"></include> 
+		<![CDATA[ 
+			  ROWNUM <= #{pageNum} * #{amount}
+			  )
+			  	WHERE 
+			  	RN > (#{pageNum}-1) * #{amount}
+		]]>
+	</select>
+	
+	<!-- 2)테이블 데이타개수 : 페이징구현사용 -->
+	<select id="getProductTotalCount" resultType="int">
+		SELECT COUNT(*) 
+		FROM GOODS_TBL 
+		WHERE
+		<include refid="criteria"></include> 
+		GDS_CODE > 0
+	</select>
 
 </mapper>

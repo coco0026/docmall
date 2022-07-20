@@ -46,7 +46,7 @@
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></beans:bean>
 	
 	<beans:bean id="uploadPath" class="java.lang.String">
-		<beans:constructor-arg value="c:\\LYS\\upload\\"></beans:constructor-arg>
+		<beans:constructor-arg value="C:\\LYS\\upload\\"></beans:constructor-arg>
 	</beans:bean>
 	
 	

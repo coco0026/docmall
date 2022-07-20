@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.docmall.domain.CommonCodeVO;
 import com.docmall.domain.ProductVO;
+import com.docmall.dto.Criteria;
+import com.docmall.dto.PageDTO;
 import com.docmall.service.AdminProductService;
 import com.docmall.service.AdminService;
 import com.docmall.service.CommonCodeService;
@@ -42,7 +45,7 @@ import lombok.extern.log4j.Log4j;
 public class AdminProductController {
 	
 	@Resource(name = "uploadPath") //Bean중에 uploadPath bean 객체를 찾아, 아래 변수에 주입
-	private String uploadPath; // C:/LYS/upload
+	private String uploadPath; // C:/LYS/upload/
 	
 	@Setter(onMethod_ = {@Autowired})
 	private CommonCodeService commonCodeService;
@@ -98,7 +101,7 @@ public class AdminProductController {
 			
 			log.info("외부 물리적 경로 : " + uploadTomcatTempPath);
 			
-			uploadPath = uploadTomcatTempPath + fileName; //servlet-context.xml경로
+			String uploadPath = uploadTomcatTempPath + fileName; //servlet-context.xml경로
 			
 			out = new FileOutputStream(new File(uploadPath)); //파일 입출력스트림 객체 생성(실제 폴더에 파일생성됨). 0byte
 			out.write(bytes); // 출력스트림에 업로드된 파일을 가르키는 바이트 배열을 쓴다. 업로드된 파일크기
@@ -140,10 +143,11 @@ public class AdminProductController {
 	@PostMapping("/adminProductInsert")
 	public String adminProductInsert(ProductVO vo, RedirectAttributes rttr) {
 		
-		
+		log.info("uploadPath " + uploadPath);
 		//파일 업로드 작업
 		String uploadDateFolderPath = UploadFileUtils.getFolder();
 		vo.setGds_img_folder(uploadDateFolderPath); //날자 폴더명
+		log.info("uploadDateFolderPath : " + uploadDateFolderPath);
 		vo.setGds_img(UploadFileUtils.uploadFile(uploadPath, uploadDateFolderPath, vo.getUploadFile()));
 		
 		
@@ -165,6 +169,66 @@ public class AdminProductController {
 		
 		return "redirect:/admin/product/adminProductInsert";
 	}
+	
+	//상품 목록
+	@GetMapping("/adminProductList")
+	public void adminProductList(Criteria cri, Model model ) {
+
+		//리스트
+		List<ProductVO> list = Service.getProductList(cri);
+		
+		//gds_img_folder의 (\)를 (/)로 변환    \가 클라이언트에서 서버로 보내지는 데이터로 사용이 안됨.   
+		for(int i=0; i<list.size(); i++) {
+			String gdsImgFolder = list.get(i).getGds_img_folder().replace("\\", "/"); // File.separator운영체제 경로구분자
+			list.get(i).setGds_img_folder(gdsImgFolder);
+		}
+		
+		log.info("list : " + list);
+		model.addAttribute("adminProductList", list);
+		
+		//총 갯수
+		int total = Service.getProductTotalCount(cri);
+		
+		//페이징
+		PageDTO pageDTO = new PageDTO(cri, total);
+		model.addAttribute("pageMaker", pageDTO);
+		
+		
+	}
+	
+	
+	
+	
+	//상품목록에서 이미지
+	@ResponseBody
+	@GetMapping("/displayFile")
+	public ResponseEntity<byte[]> displayFile(String folderName, String fileName){
+		
+		String resultFileName = folderName + "\\" + fileName; 
+		
+		//이미지를 바이트 배열로 호출
+		return UploadFileUtils.getFile(uploadPath, resultFileName);
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 }

@@ -7,6 +7,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +32,6 @@ public class UploadFileUtils {
 		//1)업로드 날자 폴더 생성
 //		String uploadDateFolderPath = getFolder(); Controller에서 처리
 		File uploadPath = new File(uploadFoler, uploadDateFolderPath); //C:\\LYS\\upload\\2022\\07\\19
-		
 		//폴더가 존재하지 않으면 폴더 생성.
 		if(uploadPath.exists() == false) {
 			uploadPath.mkdirs(); //서브 하위디렉토리까지 생성
@@ -98,6 +101,27 @@ public class UploadFileUtils {
 		return isImage;
 	}
 	
+	
+	//이미지를 바이트배열로 읽어오기         uploadPath : 경로
+	public static ResponseEntity<byte[]> getFile(String uploadPath, String fileName){
+		
+		File file = new File(uploadPath, fileName); // 이미지 파일 정보를 이용하여 file객체
+		
+		ResponseEntity<byte[]> entity = null;
+		
+		//브라우저에게 서버에서 보내는 데이터에 대한 설명
+		HttpHeaders headers = new HttpHeaders();
+		
+		try {
+			// 브라우저에게 보낼 데이터의 MIME정보(image/png, imge/jpeg, imge/gif 등)패킷의 헤더부분에 추가
+			headers.add("Content-Type", Files.probeContentType(file.toPath()));
+			entity = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(file), headers, HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return entity;
+	}
 	
 	
 	
