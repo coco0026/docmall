@@ -35,4 +35,17 @@ public class AdminProductServiceImple implements AdminProductService {
 		return mapper.getProductTotalCount(cri);
 	}
 
+	@Override
+	public ProductVO getProductByCode(Integer gds_code) {
+		// TODO Auto-generated method stub
+		return mapper.getProductByCode(gds_code);
+	}
+
+	@Override
+	public int getProductModify(ProductVO vo) {
+		// TODO Auto-generated method stub
+		return mapper.getProductModify(vo);
+	}
+
+
 }

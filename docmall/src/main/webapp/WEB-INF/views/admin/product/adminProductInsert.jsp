@@ -63,21 +63,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
 					</div>
 					<div class="box-body">
 					  <div class="form-group row">
-					  	<label for="gds_nm" class="col-sm-2 col-form-label">카테고리</label>
-						<div class="col-sm-5">
-							<select name="cate_code" id="cate_code">
+					  	<label for="cate_code" class="col-sm-2 col-form-label">1차 카테고리</label>
+						<div class="col-sm-4">
+							<select class="form-control form-control-sm-md" name="cate_code" id="cate_code">
 								<option>1차 카테고리 선택</option>
 								<c:forEach items="${cateList }" var="cateList">
 									<option value="${cateList.common_code}">${cateList.common_code_nm}</option>
 								</c:forEach>
 							</select>
-							<select name="cate_code_prt" id="cate_code_prt">
-								<option>2차 카테고리 선택</option>
-								
-							</select>
 						</div>
-						<div class="col-sm-5">
-							
+						<label for="cate_code_child" class="col-sm-2 col-form-label">2차 카테고리</label>
+						<div class="col-sm-4">
+							<select class="form-control form-control-sm-md" name="cate_code_child" id="cate_code_child">
+								<option>2차 카테고리 선택</option>
+							</select>
 					  	</div>
 					  </div>
 					  <div class="form-group row">
@@ -102,7 +101,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 					    </div>
 					  </div>
 					  <div class="form-group row">
-					    <label for="gds_img" class="col-sm-2 col-form-label">상품 이미지</label>
+					    <label for="gds_img" class="col-sm-2 col-form-label">섬네일</label>
 					    <div class="col-sm-4">
 					      <input type="file" class="form-control" id="uploadFile" name="uploadFile">
 					    </div>
@@ -118,16 +117,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 					    </div>
 					  </div>
 					</div>
+						<div class="form-group row">
+							<div class="col-sm-12 text-center">
+							 <button type="submit" class="btn btn-success" id="btnInsert">상품등록</button>
+							</div>			
+						</div>
 					<div class="box-footer">
 						<div class="form-group">
 							<ul class="uploadedList"></ul>
 						</div>
 							REGISTER PRODUCT				
-						<div class="form-group row">
-							<div class="col-sm-12 text-center">
-							 <button type="submit" class="btn btn-dark" id="btnInsert">상품등록</button>
-							</div>			
-						</div>
 					</div>
 				</form>
       		</div>
@@ -266,10 +265,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         console.log(subCategoryList[0].common_code_child_nm);
 
         let optionStr = "";
-        let cate_code_prt = $("#cate_code_prt");
+        let cate_code_child = $("#cate_code_child");
 
-        cate_code_prt.find("option").remove();
-        cate_code_prt.append("<option value=''>2차 카테고리 선택</option>")
+        cate_code_child.find("option").remove();
+        cate_code_child.append("<option value=''>2차 카테고리 선택</option>")
 
         
         //1차 카테고리별 2차카테고리 option 추가
@@ -279,7 +278,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         }
 
-        cate_code_prt.append(optionStr);
+        cate_code_child.append(optionStr);
 
 
       });

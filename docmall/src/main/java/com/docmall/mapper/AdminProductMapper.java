@@ -15,6 +15,13 @@ public interface AdminProductMapper {
 	
 	//상품총갯수
 	int getProductTotalCount(Criteria cri);
+	
+	//상품코드로 GOODS_TBL SEL
+	ProductVO getProductByCode(Integer gds_code);
+	
+	//상품수정
+	int getProductModify(ProductVO vo);
+	
 
 	
 }

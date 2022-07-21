@@ -18,7 +18,11 @@ public class Criteria {
 	private int amount; // 게시물 출력개수
 	
 	private String type; // 검색종류(제목, 내용, 작성자 등)
+	private String cate1; // 상품종류(1차카테고리)
+	private String cate2; // 상품종류(2차카테고리)
 	private String keyword; // 검색어
+	private String keywordCt1; // 상품종류(2차카테고리)
+	private String keywordCt2; // 상품종류(2차카테고리)
 	
 	//기본생성자 정의
 	public Criteria() {
@@ -39,6 +43,18 @@ public class Criteria {
 		return type == null? new String[] {} : type.split("");  // {"T", "W"}
 	}
 	
+	public String[] getTypeArr2() {
+			
+		//   검색항목을 [제목 or 작성자] 선택시 전송온 값 :  "A" 카테고리1
+		return cate1 == null? new String[] {} : cate1.split(""); 
+	}
+	
+	public String[] getTypeArr3() {
+		
+		//   검색항목을 [제목 or 작성자] 선택시 전송온 값 :  "B" 카테고리2
+		return cate2 == null? new String[] {} : cate2.split("");  
+	}
+	
 	//주소에 Criteria클래스 파라미터추가작업.  ?pageNum=값1&amount=값2&type=값3&keyword=값4
 	public String getListLink() {
 		
@@ -46,6 +62,10 @@ public class Criteria {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
 				.queryParam("pageNum", this.pageNum)
 				.queryParam("amount", this.getAmount())
+				.queryParam("cate1", this.getCate1())
+				.queryParam("cate2", this.getCate2())
+				.queryParam("keywordCt1", this.getKeywordCt1())
+				.queryParam("keywordCt2", this.getKeywordCt2())
 				.queryParam("type", this.getType())
 				.queryParam("keyword", this.getKeyword());
 

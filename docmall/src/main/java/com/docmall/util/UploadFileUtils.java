@@ -125,6 +125,29 @@ public class UploadFileUtils {
 	
 	
 	
+	//파일삭제
+	public static void deleteFile(String uploadPath, String fileName) {
+		
+		/*
+			uploadPath : c:\\LYS\\uplad
+			fileName : 2022/07/21/s_85378259-7cbb-47dc-9f5f-ec5f5e28c0be_검은티.jpg
+		*/
+		
+		String front = fileName.substring(0, 11); // 2022/07/21/
+		String end = fileName.substring(13); // 2022/07/21/s_85378259-7cbb-47dc-9f5f-ec5f5e28c0be_검은티.jpg
+		String origin = front + end; // 2022/07/21/s_85378259-7cbb-47dc-9f5f-ec5f5e28c0be_검은티.jpg
+		
+		//파일명에 s_(섬네일) 구분
+		//원본이미지 삭제
+		new File(uploadPath+origin.replace('/',  File.separatorChar)).delete();
+		
+		//섬네일 이미지 삭제 s_
+		new File(uploadPath+fileName.replace('/',  File.separatorChar)).delete();
+	}
+		
+	
+	
+	
 	
 	
 	

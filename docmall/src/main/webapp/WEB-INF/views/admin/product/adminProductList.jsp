@@ -23,6 +23,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 			alert("상품이 정상적으로 등록되었습니다.");
 		}else if(msg == "GoodsFail"){
 			alert("상품등록에 실패하였습니다 관리자에게 문의하세요.");
+		}else if(msg == "mdifySuccess"){
+			alert("상품이 정상적으로 수정되었습니다.");
+		}else if(msg == "mdifyFail"){
+			alert("상품수정에 실패하였습니다 관리자에게 문의하세요.");
 		}
 	</script>
 	
@@ -37,128 +41,148 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Left side column. contains the logo and sidebar -->
   <%@include file="/WEB-INF/views/admin/include/nav.jsp" %>
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Page Header
-        <small>Optional description</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-      </ol>
-    </section>
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper">
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+		<h1>
+			Page Header
+			<small>Optional description</small>
+		</h1>
+		<ol class="breadcrumb">
+			<li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+			<li class="active">Here</li>
+		</ol>
+		</section>
 
-    <!-- Main content -->
-    <section class="content container-fluid">
+		<!-- Main content -->
+		<section class="content container-fluid">
 
-      <div class="row">
-      	<div class="col-md-12">
-			<div class="box box-primary">
-				<div class="box-header">
-					LIST PRODUCT				
-				</div>
-				<div class="box-body">
-					 <form id="searchForm" action="/admin/product/adminProductList" method="get">
-					 <div class="col-sm-3">
-					  <select class="form-control form-control-sm-md" name="type">
-						  <option value="" <c:out value="${pageMaker.cri.type == null ? 'selected' : '' }" />>--</option>
-						  <option value="C1" <c:out value="${pageMaker.cri.type eq 'C1' ? 'selected' : '' }" />>카테코리1</option><!-- CATE1 -->
-						  <option value="C2" <c:out value="${pageMaker.cri.type eq 'C2' ? 'selected' : '' }" />>카테고리2</option><!-- CATE2 -->
-						  <option value="N" <c:out value="${pageMaker.cri.type eq 'N' ? 'selected' : '' }" />>상품이름</option><!-- GDS_NM -->
-					  </select>
-					  </div>
-					  <div class="col-sm-5"></div>
-					  <div class="col-sm-3">
-						  <input type="text" class="form-control mr-sm-2" name="keyword" placeholder="Search" value="${pageMaker.cri.keyword }">
-						  <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
-						  <input type="hidden" name="amount" value="${pageMaker.cri.amount }">
-					  </div>
-					  <div class="col-sm-1">
-					  	<button class="btn btn-link">Search</button>
-					  </div>
-				  </form>
-				  <div class="col-sm-12">
-					  <table class="table table-hover">
-						  <thead>
-						    <tr>
-						      <th scope="col">글번호</th>
-						      <th scope="col">상품이름</th>
-						      <th scope="col">가격</th>
-						      <th scope="col">재고</th>
-						      <th scope="col">판매여부</th>
-						      <th scope="col">등록일</th>
-						      <th scope="col">수정</th>
-						      <th scope="col">삭제</th>
-						    </tr>
-						  </thead>
-						  <tbody>
-						    <c:forEach items="${adminProductList }" var="List">
-						    <tr>
-						      <th scope="row"><c:out value="${List.gds_code }" /></th>
-						      <td>
-						      <img alt="이미지준비" src="/admin/product/displayFile?folderName=${List.gds_img_folder}&fileName=${List.gds_img}" style="height: 80px; width: 55px;" />
-						      <a class="move" href="${List.gds_code }"><c:out value="${List.gds_nm }" escapeXml="true" /></a>
-						      </td>
-						      <td><c:out value="${List.gds_price }" /></td>
-						      <td><c:out value="${List.gds_cnt }" /></td>
-						      <td><c:out value="${List.gds_prchs_yn }" /></td>
-						      <td><fmt:formatDate value="${List.gds_reg_date }" pattern="yyyy-MM-dd hh:mm" />   </td>
-						      <td><button type="button" class="btn btn-outline-info">수정</button></td>
-						      <td><button type="button" class="btn btn-outline-danger">삭제</button></td>
-						    </tr>
-						    </c:forEach>
-						    
-						  </tbody>
-						</table>
-						<nav aria-label="...">
-						  <ul class="pagination" style="justify-content: center;">
-						    <!-- 이전표시 -->
-						    <c:if test="${pageMaker.prev }">
-							    <li class="page-item">
-							      <a class="page-link" href="${pageMaker.startPage - 1 }">Previous</a>
-							    </li>
-						    </c:if>
-						    
-						    <!-- 페이지번호 표시.  1  2  3  4  5 -->
-						    
-						    <c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="num" >
-						    	<li class='page-item ${pageMaker.cri.pageNum == num ? "active": "" }'><a class="page-link" href="${num}">${num}</a></li>
-						    </c:forEach>
-						    <!-- 
-						    <li class="page-item active" aria-current="page">
-						      <span class="page-link">2</span>
-						    </li>
-						    <li class="page-item"><a class="page-link" href="#">3</a></li>
-						     -->
-						    <!-- 다음표시 -->
-						    <c:if test="${pageMaker.next }">
-							    <li class="page-item">
-							      <a class="page-link" href="${pageMaker.endPage + 1 }">Next</a>
-							    </li>
-						    </c:if>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="box box-primary">
+						<div class="box-header">
+							LIST PRODUCT				
+						</div>
+						<div class="box-body">
+							<form id="searchForm" action="/admin/product/adminProductList" method="get">
+								<div class="form-group row">
+									<label for="gds_nm" class="col-sm-1 col-form-label">검색분류</label>
+									<div class="col-sm-2">
+									<select class="form-control form-control-sm-md" name="type">
+										<option value="" <c:out value="${pageMaker.cri.type == null ? 'selected' : '' }" />>검색분류</option>
+										<option value="N" <c:out value="${pageMaker.cri.type eq 'N' ? 'selected' : '' }" />>상품이름</option><!-- GDS_NM -->
+										<option value="C" <c:out value="${pageMaker.cri.type eq 'C' ? 'selected' : '' }" />>상품번호</option><!-- GDS_NM -->
+									</select>
+									</div>
+									<div class="col-sm-3">
+										<input type="text" class="form-control mr-sm-2" name="keyword" placeholder="Search" value="${pageMaker.cri.keyword }">
+										<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+										<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="gds_nm" class="col-sm-1 col-form-label">상품분류</label>
+									<div class="col-sm-3">
+										<select class="form-control form-control-sm-md" name="cate1">
+											<c:forEach items="${cateList }" var="cateList">
+												<option value="A">${cateList.common_code_nm}</option>
+												<input type="hidden"  name="keywordCt1"  value="${cateList.common_code }">
+											</c:forEach>
+										</select>
+									</div>
+									<div class="col-sm-3">
+										<select class="form-control form-control-sm-md" name="type2">
+											<option value="">2차 카테고리</option>
+										</select>
+									</div>
+								</div>
 							
-						  </ul>
-						  <!--페이지 번호 클릭시 list주소로 보낼 파라미터 작업-->
-							<form id="actionForm" action="/admin/product/adminProductList" method="get">
-								<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
-								<input type="hidden" name="amount" value="${pageMaker.cri.amount}">
-								<input type="hidden" name="type" value="${pageMaker.cri.type}">
-								<input type="hidden" name="keyword" value="${pageMaker.cri.keyword}">
+								<div class="col-sm-5"></div>
+								
+								<div class="col-sm-1">
+									<button class="btn btn-link">Search</button>
+								</div>
 							</form>
-						</nav>
+							<div class="col-sm-12">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+										<th scope="col">글번호</th>
+										<th scope="col">상품이름</th>
+										<th scope="col">가격</th>
+										<th scope="col">재고</th>
+										<th scope="col">판매여부</th>
+										<th scope="col">등록일</th>
+										<th scope="col">수정</th>
+										<th scope="col">삭제</th>
+										</tr>
+									</thead>
+									<tbody>
+										<c:forEach items="${adminProductList }" var="List">
+										<tr>
+										<th scope="row"><c:out value="${List.gds_code }" /></th>
+										<td>
+										<img alt="이미지준비" src="/admin/product/displayFile?folderName=${List.gds_img_folder}&fileName=s_${List.gds_img}" style="height: 80px; width: 55px;" />
+										<a class="move" href="${List.gds_code }"><c:out value="${List.gds_nm }" escapeXml="true" /></a>
+										</td>
+										<td><c:out value="${List.gds_price }" /></td>
+										<td><c:out value="${List.gds_cnt }" /></td>
+										<td><c:out value="${List.gds_prchs_yn }" /></td>
+										<td><fmt:formatDate value="${List.gds_reg_date }" pattern="yyyy-MM-dd hh:mm" />   </td>
+										<td><button type="button" name="btnProductEdit" data-gds_code="${List.gds_code}" class="btn btn-info">수정</button></td>
+										<td><button type="button" name="btnProductDel" data-gds_code="${List.gds_code}" class="btn btn-danger">삭제</button></td>
+										</tr>
+										</c:forEach>
+										
+									</tbody>
+								</table>
+								<nav aria-label="...">
+									<ul class="pagination" style="justify-content: center;">
+										<!-- 이전표시 -->
+										<c:if test="${pageMaker.prev }">
+											<li class="page-item">
+											<a class="page-link" href="${pageMaker.startPage - 1 }">Previous</a>
+											</li>
+										</c:if>
+										
+										<!-- 페이지번호 표시.  1  2  3  4  5 -->
+										
+										<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="num" >
+											<li class='page-item ${pageMaker.cri.pageNum == num ? "active": "" }'><a class="page-link" href="${num}">${num}</a></li>
+										</c:forEach>
+										<!-- 
+										<li class="page-item active" aria-current="page">
+										<span class="page-link">2</span>
+										</li>
+										<li class="page-item"><a class="page-link" href="#">3</a></li>
+										-->
+										<!-- 다음표시 -->
+										<c:if test="${pageMaker.next }">
+											<li class="page-item">
+											<a class="page-link" href="${pageMaker.endPage + 1 }">Next</a>
+											</li>
+										</c:if>
+										
+									</ul>
+									<!--페이지 번호 클릭시 list주소로 보낼 파라미터 작업-->
+									<form id="actionForm" action="/admin/product/adminProductList" method="get">
+										<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
+										<input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+										<input type="hidden" name="type" value="${pageMaker.cri.type}">
+										<input type="hidden" name="keyword" value="${pageMaker.cri.keyword}">
+									</form>
+								</nav>
+							</div>
+						</div>
 					</div>
 				</div>
-			
-      		</div>
-      	</div>
-      </div>
+			</div>
+		</section>
 
-    </section>
+    
     <!-- /.content -->
-  </div>
+	</div>
   <!-- /.content-wrapper -->
 
   <!-- Main Footer -->
@@ -297,6 +321,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
     
     
     
+
+		//상품수정
+		$("button[name='btnProductEdit']").on("click", function(){
+			//$(this).data("gds_code"); 태그에 있는 data_gds_code의 값
+
+			//상품코드를 자식으로 추가
+			actionForm.append("<input type='hidden' name='gds_code' value='"+ $(this).data("gds_code") +"'>");
+
+			
+			actionForm.attr("method","get");			
+			actionForm.attr("action","/admin/product/adminProductModify");
+			actionForm.submit();
+
+		});
 
 
   });

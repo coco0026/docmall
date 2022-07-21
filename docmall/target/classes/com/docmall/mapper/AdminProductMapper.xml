@@ -2,11 +2,56 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.docmall.mapper.AdminProductMapper">
 
+
+	<!-- 
+		 검색 조건 :  카테고리1(TOP,PANTS....)	C1	
+	 		           카테고리2(반팔티,긴팔티....)	C2	
+	 		           상품이름					N	
+	 		            
+	-->
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'N'.toString()">
+							GDS_NM LIKE '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'C'.toString()">
+							GDS_CODE LIKE '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+			
+			<foreach collection="typeArr2" item="cate1">
+				<trim prefix="OR">
+					<choose>
+						<when test="cate1 == 'A'.toString()">
+							<if test="type != null">
+							AND 
+							</if>
+							CATE_CODE LIKE '%' || #{keywordCt1} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+
+
+
+
+
+
+
+
+
 	<insert id="productInsert" parameterType="com.docmall.domain.ProductVO">
 		INSERT INTO GOODS_TBL(
 		    GDS_CODE,           
 		    CATE_CODE,           
-		    CATE_CODE_PRT,      
+		    CATE_CODE_CHILD,      
 		    GDS_NM,              
 		    GDS_CN,              
 		    GDS_IMG,           
@@ -18,7 +63,7 @@
 		)VALUES(
 			pk_gds_code.nextval,
 			#{cate_code},
-			#{cate_code_prt},
+			#{cate_code_child},
 			#{gds_nm},
 			#{gds_cn},
 			#{gds_img},
@@ -31,39 +76,13 @@
 	</insert>
 	
 	
-	<!-- 
-		 검색 조건 :  카테고리1(TOP,PANTS....)	C1	
-	 		           카테고리2(반팔티,긴팔티....)	C2	
-	 		           상품이름					N	
-	 		            
-	-->
-	<sql id="criteria">
-		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
-			<foreach collection="typeArr" item="type">
-				<trim prefix="OR">
-					<choose>
-						<when test="type == 'C1'.toString()">
-							CATE_CODE LIKE '%' || #{keyword} || '%'
-						</when>
-						<when test="type == 'C2'.toString()">
-							CATE_CODE_PRT LIKE '%' || #{keyword} || '%'
-						</when>
-						<when test="type == 'N'.toString()">
-							GDS_NM LIKE '%' || #{keyword} || '%'
-						</when>
-					</choose>
-				</trim>
-			</foreach>
-		</trim>
-	</sql>
-	
 	<!-- 1)데이타(목록)  /*+ INDEX_DESC(GOODS_TBL PK_GDS_CODE)*/(인덱스헌트)-->
 	<select id="getProductList" parameterType="com.docmall.dto.Criteria" resultType="com.docmall.domain.ProductVO">
 		<![CDATA[
 		SELECT RN, 
 			   GDS_CODE, 
 			   CATE_CODE, 
-			   CATE_CODE_PRT, 
+			   CATE_CODE_CHILD, 
 			   GDS_NM, 
 			   GDS_CN, 
 			   GDS_IMG, 
@@ -79,7 +98,7 @@
 		      SELECT  /*+ INDEX_DESC(GOODS_TBL PK_GDS_CODE)*/ ROWNUM RN, 
 		            GDS_CODE, 
 		            CATE_CODE, 
-		            CATE_CODE_PRT, 
+		            CATE_CODE_CHILD, 
 		            GDS_NM, 
 		            GDS_CN, 
 		            GDS_IMG, 
@@ -111,5 +130,48 @@
 		<include refid="criteria"></include> 
 		GDS_CODE > 0
 	</select>
+	
+	
+	
+	
+	
+	<select id="getProductByCode" parameterType="int" resultType="com.docmall.domain.ProductVO">
+		SELECT GDS_CODE, 
+			   CATE_CODE, 
+			   CATE_CODE_CHILD, 
+			   GDS_NM, 
+			   GDS_CN, 
+			   GDS_IMG, 
+			   GDS_IMG_FOLDER, 
+			   GDS_PRICE, 
+			   GDS_DSCNT, 
+			   GDS_CNT, 
+			   GDS_PRCHS_YN, 
+			   GDS_SALE_CNT, 
+			   GDS_REG_DATE, 
+			   GDS_UPDATE_DATE
+		FROM GOODS_TBL
+		WHERE GDS_CODE = #{gds_code}
+	</select>
+	
+	
+	<!-- 상품수정 -->
+	<update id="getProductModify" parameterType="com.docmall.domain.ProductVO">
+		UPDATE GOODS_TBL 
+		SET GDS_CODE  			=		#{gds_code},      
+			CATE_CODE           =		#{cate_code}, 
+		    CATE_CODE_CHILD     = 		#{cate_code_child}, 
+		    GDS_NM              =		#{gds_nm}, 
+		    GDS_CN              =		#{gds_cn}, 
+		    GDS_IMG             =		#{gds_img}, 
+		    GDS_IMG_FOLDER      =		#{gds_img_folder}, 
+		    GDS_PRICE           =		#{gds_price}, 
+		    GDS_DSCNT           =		#{gds_dscnt}, 
+		    GDS_CNT             =		#{gds_cnt}, 
+		    GDS_PRCHS_YN        =   	#{gds_prchs_yn},
+		    GDS_UPDATE_DATE		=		SYSDATE
+	   WHERE GDS_CODE = #{gds_code}
+	</update>
+	
 
 </mapper>

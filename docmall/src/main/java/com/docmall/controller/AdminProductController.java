@@ -20,9 +20,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -173,6 +175,10 @@ public class AdminProductController {
 	//상품 목록
 	@GetMapping("/adminProductList")
 	public void adminProductList(Criteria cri, Model model ) {
+		
+		model.addAttribute("cateList", commonCodeService.getCommonCode());//1차 카테고리 정보
+		
+		log.info("cri : " + cri);
 
 		//리스트
 		List<ProductVO> list = Service.getProductList(cri);
@@ -210,6 +216,63 @@ public class AdminProductController {
 		return UploadFileUtils.getFile(uploadPath, resultFileName);
 		
 	}
+	
+	//상품수정 폼
+	@GetMapping("/adminProductModify")
+	public void adminProductModify(@RequestParam("gds_code") Integer gds_code, @ModelAttribute("cri") Criteria cri, Model model) {
+		
+		log.info("gds_code : " + gds_code);
+		log.info("cri : " + cri);
+		
+		//1차카테고리 작업
+		model.addAttribute("cateList", commonCodeService.getCommonCode());
+		
+		//상품정보
+		ProductVO vo = Service.getProductByCode(gds_code);
+		model.addAttribute("productVO", vo);
+		
+		//상품정보에서 1차카테고리 코드를  참조
+		String cate_code = vo.getCate_code();
+		model.addAttribute("subCateList", commonCodeService.getSubCommonCode(cate_code));
+		
+		
+	}
+	
+	//상품수정
+	@PostMapping("/adminProductModify")
+	public String adminProductModify(ProductVO vo, Criteria cri ,RedirectAttributes rttr) {
+		
+		//상품 이미지 변경 여부 확인
+		//상품 이미지를 변경한 경우
+		if(!vo.getUploadFile().isEmpty()) {
+			
+			//상품등록 이미지 파일삭제
+			UploadFileUtils.deleteFile(uploadPath, vo.getGds_img_folder() + "\\s_" + vo.getGds_img());
+			
+			
+			//파일 업로드 작업
+			String uploadDateFolderPath = UploadFileUtils.getFolder();
+			vo.setGds_img_folder(uploadDateFolderPath); //날자 폴더명
+			vo.setGds_img(UploadFileUtils.uploadFile(uploadPath, uploadDateFolderPath, vo.getUploadFile()));
+		}
+		
+		//Gds_prchs_yn의 파라미터가 Y가 아닐시 N
+		if(vo.getGds_prchs_yn() == null) {
+			vo.setGds_prchs_yn("N");
+		}
+		
+		log.info("상품등록 정보 : " + vo); 
+		
+		//상품정보 저장
+		if(Service.getProductModify(vo) == ONE) {
+			rttr.addFlashAttribute("msg", "mdifySuccess");//로그인 완료시 메시지
+		}else{
+			rttr.addFlashAttribute("msg", "mdifyFail");//로그인 완료시 메시지
+		}
+		
+		return "redirect:/admin/product/adminProductList";
+	}
+	
 	
 	
 	
