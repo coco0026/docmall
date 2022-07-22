@@ -10,7 +10,7 @@
 	 		            
 	-->
 	<sql id="criteria">
-		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+		<trim prefix="("   prefixOverrides="OR">
 			<foreach collection="typeArr" item="type">
 				<trim prefix="OR">
 					<choose>
@@ -24,18 +24,25 @@
 				</trim>
 			</foreach>
 			
-			<foreach collection="typeArr2" item="cate1">
-				<trim prefix="OR">
-					<choose>
-						<when test="cate1 == 'A'.toString()">
-							<if test="type != null">
+			<trim  suffix=") AND">
+				<choose>
+					<when test="cate_code != null">
+						<if test="type != ''">
 							AND 
-							</if>
-							CATE_CODE LIKE '%' || #{keywordCt1} || '%'
-						</when>
-					</choose>
-				</trim>
-			</foreach>
+						</if>
+						CATE_CODE LIKE '%' || #{cate_code} || '%'
+					</when>
+				</choose>
+				<choose>
+					<when test="cate_code_child != null">
+						<if test="type != '' || cate_code != ''">
+							AND 
+						</if>
+						CATE_CODE_CHILD LIKE '%' || #{cate_code_child} || '%'
+					</when>
+				</choose>
+			</trim>
+			
 		</trim>
 	</sql>
 
@@ -172,6 +179,14 @@
 		    GDS_UPDATE_DATE		=		SYSDATE
 	   WHERE GDS_CODE = #{gds_code}
 	</update>
+	
+	
+	
+	<!-- 상품삭제 -->
+	<delete id="getProductDelete" parameterType="int">
+		DELETE FROM GOODS_TBL
+		 WHERE GDS_CODE = #{gds_code} 
+	</delete>
 	
 
 </mapper>

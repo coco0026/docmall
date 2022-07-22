@@ -57,7 +57,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <div class="row">
       	<div class="col-md-12">
 			<div class="box box-primary">
-				<form id="productForm" action="adminProductInsert" method="post" enctype="multipart/form-data">
+				<form id="productForm" action="adminProductModify" method="post" enctype="multipart/form-data">
+				
+					<!-- 페이지 및 검색정보 -->
+				    <input type="hidden"  id="gds_code" name="gds_code" value="${productVO.gds_code}"><!-- 리스트에서 가져온 상품번호 -->
+					<input type="hidden"  id="pageNum" name="pageNum" value="${cri.pageNum}">
+					<input type="hidden"  id="amount" name="amount" value="${cri.amount}">
+					<input type="hidden"  id="type" name="type" value="${cri.type}">
+					<%-- <input type="hidden"  id="common_code" name="common_code" value="${cri.common_code}">
+					<input type="hidden"  id="common_code_child" name="common_code_child" value="${cri.common_code_child}"> --%>
+					<input type="hidden"  id="keyword" name="keyword" value="${cri.keyword}">
+					
+					
+					
 					<div class="box-header">
 						REGISTER PRODUCT				
 					</div>
@@ -68,72 +80,84 @@ scratch. This page gets rid of all links and provides the needed markup only.
 							<select class="form-control form-control-sm-md" name="cate_code" id="cate_code">
 								<option>1차 카테고리 선택</option>
 								<c:forEach items="${cateList }" var="cateList">
-									<option value="${cateList.common_code}">${cateList.common_code_nm}</option>
+									<option value="${cateList.common_code}" ${cateList.common_code == productVO.cate_code ? 'selected':'' }>${cateList.common_code_nm}</option>
 								</c:forEach>
 							</select>
 						</div>
 						<label for="cate_code_child" class="col-sm-2 col-form-label">2차 카테고리</label>
 						<div class="col-sm-4">
 							<select class="form-control form-control-sm-md" name="cate_code_child" id="cate_code_child">
-								<option>2차 카테고리 선택</option>
+								<c:forEach items="${subCateList }" var="subCateList">
+									<option value="${subCateList.common_code_child}" ${subCateList.common_code_child == productVO.cate_code_child ? 'selected':'' }>${subCateList.common_code_child_nm}</option>
+								</c:forEach>
 							</select>
 					  	</div>
 					  </div>
+					  
 					  <div class="form-group row">
 					    <label for="gds_nm" class="col-sm-2 col-form-label">상품명</label>
 					    <div class="col-sm-4">
-					      <input type="text" class="form-control" id="gds_nm" name="gds_nm">
+					      <input type="text" class="form-control" id="gds_nm" name="gds_nm" value="${productVO.gds_nm}">
 					    </div>
 					    <label for="gds_price" class="col-sm-2 col-form-label">상품가격</label>
 					    <div class="col-sm-4">
-					      <input type="text" class="form-control" id="gds_price" name="gds_price">
+					      <input type="text" class="form-control" id="gds_price" name="gds_price" value="${productVO.gds_price}">
 					    </div>
 					  </div>
 					  
 					  <div class="form-group row">
 					    <label for="gds_dscnt" class="col-sm-2 col-form-label">할인율</label>
 					    <div class="col-sm-4">
-					      <input type="text" class="form-control" id="gds_dscnt" name="gds_dscnt">
+					      <input type="text" class="form-control" id="gds_dscnt" name="gds_dscnt" value="${productVO.gds_dscnt}">
 					    </div>
 					    <label for="gds_cnt" class="col-sm-2 col-form-label">상품수</label>
 					    <div class="col-sm-4">
-					      <input type="text" class="form-control" id="gds_cnt" name="gds_cnt">
+					      <input type="text" class="form-control" id="gds_cnt" name="gds_cnt" value="${productVO.gds_cnt}">
 					    </div>
 					  </div>
+					  
 					  <div class="form-group row">
 					    <label for="gds_img" class="col-sm-2 col-form-label">섬네일</label>
 					    <div class="col-sm-4">
 					      <input type="file" class="form-control" id="uploadFile" name="uploadFile">
+					      <input type="hidden" class="form-control" id="gds_img" name="gds_img" value="${productVO.gds_img}">
+					      <input type="hidden" class="form-control" id="gds_img_folder" name="gds_img_folder" value="${productVO.gds_img_folder}">
 					    </div>
 					    <label class="form-check-label col-sm-2" for="gds_prchs_yn">구매가능 여부</label>
 						<div class="col-sm-4 text-left">
-						  <input class="form-check-input" type="checkbox" value="Y" id="gds_prchs_yn" name="gds_prchs_yn">
+						  <input class="form-check-input" type="checkbox" value="Y" id="gds_prchs_yn" name="gds_prchs_yn" ${productVO.gds_prchs_yn  == 'Y' ? 'checked':''}>
 						</div>	
 					  </div>
 					  <div class="form-group row">
-					    <label class="form-check-label col-sm-2" for="gds_prchs_yn">이미지</label>
-					  	<div class="col-sm-4 text-left">
+					    <label for="gds_img" class="col-sm-2 col-form-label">섬네일 변경전</label>
+					    <div class="col-sm-4">
+					      <img alt="이미지준비" src="/admin/product/displayFile?folderName=${productVO.gds_img_folder}&fileName=${productVO.gds_img}" style="height: 120px; width: 100px;" onerror="this.onerror=null; this.src='/img/noIMG.png'" /><!-- onerror 네트웍 상황에따라 이미지를 불러올 수 없을경우 대체이미지 -->
+					      <input type="hidden" class="form-control" id="gds_img" name="gds_img" value="${productVO.gds_img}">
+					      <input type="hidden" class="form-control" id="gds_img_folder" name="gds_img_folder" value="${productVO.gds_img_folder}">
+					    </div>
+					    <label class="form-check-label col-sm-2" for="gds_prchs_yn">섬네일 변경후</label>
+						<div class="col-sm-4 text-left">
 							<img id="change_img" style="height: 120px; width: 100px;" >
-						</div>
+						</div>	
 					  </div>
 					  <div class="form-group row">
 					    <label for="gds_cn" class="col-sm-2 col-form-label">상품설명</label>
 					    <div class="col-sm-10">
-					      <textarea class="form-control" name="gds_cn" id="gds_cn" rows="3"></textarea>
+					      <textarea class="form-control" name="gds_cn" id="gds_cn">${productVO.gds_cn }</textarea>
 					    </div>
 					  </div>
 					</div>
-						<div class="form-group row">
-							<div class="col-sm-12 text-center">
-							 <button type="submit" class="btn btn-success" id="btnInsert">상품등록</button>
-							</div>			
-						</div>
-					<div class="box-footer">
-						<div class="form-group">
-							<ul class="uploadedList"></ul>
-						</div>
-							REGISTER PRODUCT				
+					<div class="form-group row">
+						<div class="col-sm-12 text-center">
+						 <button type="submit" class="btn btn-success" id="btnModify">상품수정</button>
+						</div>			
 					</div>
+				<div class="box-footer">
+					<div class="form-group">
+						<ul class="uploadedList"></ul>
+					</div>
+						REGISTER PRODUCT				
+				</div>
 				</form>
       		</div>
       	</div>
@@ -289,9 +313,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
       });
 
+ 
+
+
+
     });
     
-    
+
     //이미지 미리보기
     $("#uploadFile").on("change", function(e){
 
@@ -305,8 +333,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
       reader.readAsDataURL(file);
 
     });
-    
-    
     
     
     

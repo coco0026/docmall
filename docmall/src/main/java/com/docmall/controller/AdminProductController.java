@@ -229,6 +229,8 @@ public class AdminProductController {
 		
 		//상품정보
 		ProductVO vo = Service.getProductByCode(gds_code);
+		vo.setGds_img_folder(vo.getGds_img_folder().replace("\\", "/")); //수정폼 이미지 출력시
+		
 		model.addAttribute("productVO", vo);
 		
 		//상품정보에서 1차카테고리 코드를  참조
@@ -273,6 +275,23 @@ public class AdminProductController {
 		return "redirect:/admin/product/adminProductList";
 	}
 	
+	//상품삭제
+	@GetMapping("/adminProductDelete")
+	public String adminProductDelete(@RequestParam("gds_code") Integer gds_code, 
+			@ModelAttribute("cri") Criteria cri, String gds_img_folder, String gds_img, RedirectAttributes rttr) {
+		
+		//상품등록 이미지 파일삭제
+		UploadFileUtils.deleteFile(uploadPath, gds_img_folder + "\\s_" + gds_img);
+		
+		if(Service.getProductDelete(gds_code) == ONE) {
+			rttr.addFlashAttribute("msg", "delSuccess");//로그인 완료시 메시지
+		}else {
+			rttr.addFlashAttribute("msg", "delFail");//로그인 완료시 메시지
+		}
+		
+		
+		return "redirect:/admin/product/adminProductList";
+	}
 	
 	
 	

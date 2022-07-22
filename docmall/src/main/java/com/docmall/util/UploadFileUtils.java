@@ -107,6 +107,15 @@ public class UploadFileUtils {
 		
 		File file = new File(uploadPath, fileName); // 이미지 파일 정보를 이용하여 file객체
 		
+		
+		//이미지 파일이 존재하지 않을 경우 다른이미지로 대체
+		if(!file.exists()) {
+			uploadPath = "C:\\LYS\\upload\\noimg";
+			fileName = "noIMG.jpg";
+			
+			file = new File(uploadPath, fileName); 
+		}
+		
 		ResponseEntity<byte[]> entity = null;
 		
 		//브라우저에게 서버에서 보내는 데이터에 대한 설명

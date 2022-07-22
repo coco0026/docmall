@@ -21,6 +21,9 @@ public interface AdminProductService {
 	
 	//상품수정
 	int getProductModify(ProductVO vo);
+	
+	//상품삭제
+	int getProductDelete(Integer gds_code);
 
 
 }

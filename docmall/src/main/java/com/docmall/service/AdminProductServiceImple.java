@@ -47,5 +47,11 @@ public class AdminProductServiceImple implements AdminProductService {
 		return mapper.getProductModify(vo);
 	}
 
+	@Override
+	public int getProductDelete(Integer gds_code) {
+		// TODO Auto-generated method stub
+		return mapper.getProductDelete(gds_code);
+	}
+
 
 }
