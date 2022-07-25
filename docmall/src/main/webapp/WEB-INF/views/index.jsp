@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!doctype html>
 <html>
@@ -30,10 +32,8 @@
         }
       }
     </style>
-
     
-    <!-- Custom styles for this template -->
-    <link href="pricing.css" rel="stylesheet">
+    <%@include file="/WEB-INF/views/include/common.jsp" %>
     
     <script>
 		//프로세스 완료 메시지
@@ -60,6 +60,11 @@
   <body>
     
 <%@include file="/WEB-INF/views/include/header.jsp" %>
+<%@include file="/WEB-INF/views/include/categoryMenu.jsp" %>
+
+
+
+
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
   <h1 class="display-4">Pricing</h1>
@@ -119,7 +124,7 @@
   <%@include file="/WEB-INF/views/include/footer.jsp" %>
 </div>
 
-<%@include file="/WEB-INF/views/include/common.jsp" %>
+
     
   </body>
 </html>
