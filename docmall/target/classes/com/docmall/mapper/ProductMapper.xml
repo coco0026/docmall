@@ -79,6 +79,26 @@
 		<include refid="criteria"></include> 
 		GDS_CODE > 0
 	</select>
+	
+	
+	<select id="getProductByCode" parameterType="int" resultType="com.docmall.domain.ProductVO">
+		SELECT GDS_CODE, 
+			   CATE_CODE, 
+			   CATE_CODE_CHILD, 
+			   GDS_NM, 
+			   GDS_CN, 
+			   GDS_IMG, 
+			   GDS_IMG_FOLDER, 
+			   GDS_PRICE, 
+			   GDS_DSCNT, 
+			   GDS_CNT, 
+			   GDS_PRCHS_YN, 
+			   GDS_SALE_CNT, 
+			   GDS_REG_DATE, 
+			   GDS_UPDATE_DATE
+		FROM GOODS_TBL
+		WHERE GDS_CODE = #{gds_code}
+	</select>
 
 
 

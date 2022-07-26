@@ -29,4 +29,10 @@ public class ProductServiceImple implements ProductService {
 		return mapper.getProductTotalCountBySubCategory(cate_code_child, cri);
 	}
 
+	@Override
+	public ProductVO getProductByCode(Integer gds_code) {
+		// TODO Auto-generated method stub
+		return mapper.getProductByCode(gds_code);
+	}
+
 }

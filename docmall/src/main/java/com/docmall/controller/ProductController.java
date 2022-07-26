@@ -2,6 +2,8 @@ package com.docmall.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +22,13 @@ import com.docmall.dto.Criteria;
 import com.docmall.dto.PageDTO;
 import com.docmall.service.CommonCodeService;
 import com.docmall.service.ProductService;
+import com.docmall.util.UploadFileUtils;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-@RequestMapping("/product/*")
+@RequestMapping("/user/product/*")
 @Controller
 public class ProductController {
 	
@@ -36,6 +39,8 @@ public class ProductController {
 	@Setter(onMethod_ = {@Autowired})
 	private ProductService service;
 	
+	@Resource(name = "uploadPath") //Bean중에 uploadPath bean 객체를 찾아, 아래 변수에 주입
+	private String uploadPath; // C:/LYS/upload/
 	
 	//1차 카테고리는 GlobalControllerAdvice에서 처리
 	
@@ -80,12 +85,37 @@ public class ProductController {
 		PageDTO pageDTO = new PageDTO(cri, total);
 		model.addAttribute("pageMaker", pageDTO);
 		
-		return  "/product/productList";
+		return  "user/product/productList";
 	}
 	
 	
 	
+	//상품목록에서 이미지
+	@ResponseBody
+	@GetMapping("/displayFile")
+	public ResponseEntity<byte[]> displayFile(String folderName, String fileName){
+		
+		String resultFileName = folderName + "\\" + fileName; 
+		
+		//이미지를 바이트 배열로 호출
+		return UploadFileUtils.getFile(uploadPath, resultFileName);
+		
+	}
 	
+	//모달 대화상자 상품상제정보
+	@ResponseBody
+	@GetMapping("/productDetail/{gds_code}")
+	public ResponseEntity<ProductVO> productDetail(@PathVariable("gds_code") Integer gds_code) {
+		
+		ResponseEntity<ProductVO> entity = null;
+		
+		ProductVO vo = service.getProductByCode(gds_code);
+		vo.setGds_img_folder(vo.getGds_img_folder().replace("\\", "/"));
+		
+		entity = new ResponseEntity<ProductVO>(vo, HttpStatus.OK);
+		
+		return entity;
+	}
 	
 	
 	

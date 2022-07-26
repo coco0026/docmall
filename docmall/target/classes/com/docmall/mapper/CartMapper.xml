@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.docmall.mapper.CartMapper">
+
+
+	<insert id="cart_add" parameterType="com.docmall.domain.CartVO">
+	
+		INSERT INTO CART_TBL(
+			CART_CODE, 
+			GDS_CODE, 
+			MBR_ID, 
+			CART_PRCHS_CNT
+		)
+		VALUES(
+			SEQ_CART_COD.NEXTVAL,
+			#{gds_code},
+			#{mbr_id},
+			#{cart_prchs_cnt}
+		)
+	
+	</insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -197,7 +197,7 @@ drop table GOODS_TBL;
 CREATE TABLE GOODS_TBL (
     GDS_CODE            NUMBER                  CONSTRAINT PK_GDS_CODE PRIMARY KEY, --상품번호
     CATE_CODE           VARCHAR2(15)            NOT NULL, -- 카테고리 코드1
-    CATE_CODE_PRT       VARCHAR2(15)            NOT NULL, -- 카테고리 코드 2
+    CATE_CODE_CHILD       VARCHAR2(15)            NOT NULL, -- 카테고리 코드 2
     GDS_NM              VARCHAR2(50)            NOT NULL, --상품명
     GDS_CN              VARCHAR2(3000)          NOT NULL, -- 상품소개
     GDS_IMG             VARCHAR2(50)            NOT NULL, -- 상품이미지명
@@ -248,12 +248,15 @@ INSERT INTO GOODS_TBL(
 --);
 
 --장바구니 테이블
-CREATE TABLE SHOPPING_BASKET_TBL (
-    SB_CODE             NUMBER                  PRIMARY KEY, --장바구니 상품 코드
+CREATE TABLE SHOPPING_CART_TBL (
+    CART_CODE             NUMBER                  PRIMARY KEY, --장바구니 상품 코드
     GDS_CODE            NUMBER                  NOT NULL, -- 상품번호
     MBR_ID              VARCHAR2(15)            NOT NULL, --회원ID
-    SB_PRCHS_CNT        NUMBER                  NOT NULL --구매수량
+    CART_PRCHS_CNT        NUMBER                  NOT NULL --구매수량
 );
+
+
+CREATE SEQUENCE SEQ_CART_CODE;
 
 --주문 정보 테이블
 CREATE TABLE ORDER_TBL (
