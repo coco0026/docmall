@@ -5,22 +5,67 @@
 
 	<insert id="cart_add" parameterType="com.docmall.domain.CartVO">
 	
-		INSERT INTO CART_TBL(
-			CART_CODE, 
-			GDS_CODE, 
-			MBR_ID, 
-			CART_PRCHS_CNT
-		)
-		VALUES(
-			SEQ_CART_COD.NEXTVAL,
-			#{gds_code},
-			#{mbr_id},
-			#{cart_prchs_cnt}
-		)
-	
+		MERGE INTO CART_TBL
+		USING DUAL
+		ON (MBR_ID = #{mbr_id} AND GDS_CODE = #{gds_code})
+		WHEN MATCHED THEN
+		    UPDATE SET CART_PRCHS_CNT = CART_PRCHS_CNT + #{cart_prchs_cnt}
+		WHEN NOT MATCHED THEN
+		    INSERT(  CART_CODE, 
+		             GDS_CODE, 
+		             MBR_ID, 
+		             CART_PRCHS_CNT
+		    )VALUES(
+		            SEQ_CART_CODE.NEXTVAL,
+					#{gds_code},
+					#{mbr_id},
+					#{cart_prchs_cnt}
+		    )
 	</insert>
+	
+	
+	
+	<select id="cart_list" resultType="com.docmall.domain.CartVOList">
+		
+		SELECT A.CART_CODE, 
+		       A.GDS_CODE,
+		       A.MBR_ID,          
+		       A.CART_PRCHS_CNT,
+		       B.GDS_NM,
+		       B.GDS_IMG,
+		       B.GDS_IMG_FOLDER,
+		       B.GDS_PRICE,
+		       B.GDS_DSCNT,
+		       C.MBR_POINT_NY,
+		       C.MBR_GRADE_CODE
+		FROM CART_TBL A, GOODS_TBL B, MEMBER_DETAIL_TBL C
+		WHERE A.GDS_CODE = B.GDS_CODE AND
+		      A.MBR_ID = C.MBR_ID AND
+		      A.MBR_ID = #{mbr_id}
+		      
+	</select>
+	
+	
+	<!-- //장바구니 수량변경 -->
+	<update id="cartCntUpdate">
+	
+		UPDATE CART_TBL 
+		SET CART_PRCHS_CNT = #{cart_prchs_cnt}
+	    WHERE CART_CODE = #{cart_code}
+	
+	</update>
 
-
+	<!-- 장바구니 취소 -->
+	<delete id="cartDelete">
+		DELETE FROM CART_TBL
+		WHERE CART_CODE = #{cart_code}
+	</delete>
+	
+	<!-- 장바구니 전체 취소 -->
+	<delete id="cartAllDelete">
+		DELETE FROM CART_TBL
+		WHERE MBR_ID = #{mbr_id}
+	</delete>
 
 
 

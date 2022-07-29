@@ -3,6 +3,7 @@ package com.docmall.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.docmall.domain.CartVO;
 import com.docmall.domain.CommonCodeVO;
+import com.docmall.domain.MemberVO;
 import com.docmall.domain.ProductVO;
 import com.docmall.dto.Criteria;
 import com.docmall.dto.PageDTO;
+import com.docmall.service.CartService;
 import com.docmall.service.CommonCodeService;
 import com.docmall.service.ProductService;
 import com.docmall.util.UploadFileUtils;
@@ -42,7 +46,13 @@ public class ProductController {
 	@Resource(name = "uploadPath") //Bean중에 uploadPath bean 객체를 찾아, 아래 변수에 주입
 	private String uploadPath; // C:/LYS/upload/
 	
+	@Setter(onMethod_ = {@Autowired})
+	private CartService cartService;
+	
+	
+	
 	//1차 카테고리는 GlobalControllerAdvice에서 처리
+	
 	
 	
 	//2차 카테고리
@@ -61,8 +71,8 @@ public class ProductController {
 	
 	
 	//상품리스트
-	@GetMapping("/productList/{common_code_child}") // REST API 주소형태
-	public String productList(@PathVariable("common_code_child") String cate_code_child, @ModelAttribute("cri") Criteria cri, Model model) {
+	@GetMapping("/productList/{common_code_child}/{cate_code_child_nm}") // REST API 주소형태
+	public String productList(@PathVariable("common_code_child") String cate_code_child, @PathVariable("cate_code_child_nm") String cate_code_child_nm, @ModelAttribute("cri") Criteria cri, Model model) {
 		
 		log.info("2차 카테고리 : " + cate_code_child);
 		
@@ -117,7 +127,40 @@ public class ProductController {
 		return entity;
 	}
 	
+	//상품상세
+	@GetMapping("/productDetail")
+	public String productDetail(@RequestParam("gds_code") Integer gds_code, @ModelAttribute("common_code_child") String cate_code_child, @ModelAttribute("cate_code_child_nm") String cate_code_child_nm, @ModelAttribute("cri") Criteria cri, Model model) {
+		
+		
+		ProductVO vo = service.getProductByCode(gds_code);
+		vo.setGds_img_folder(vo.getGds_img_folder().replace("\\", "/"));
+		
+		model.addAttribute("productVO", vo);
+		
+		
+		return "/user/product/productDetail";
+	}
 	
+	
+	//장바구니 담기
+	@ResponseBody
+	@GetMapping("/cart_add")
+	public ResponseEntity<String> cart_add(CartVO vo, HttpSession session) {
+		
+		ResponseEntity<String> entity = null;
+		
+		log.info("장바구니 : " + vo);
+		
+		//세션 정보
+		String mbr_id = ((MemberVO) session.getAttribute("loginStatus")).getMbr_id();
+		vo.setMbr_id(mbr_id);
+		
+		cartService.cart_add(vo);
+		entity = new ResponseEntity<String>("success", HttpStatus.OK);
+		
+		return entity;
+		
+	}
 	
 	
 	

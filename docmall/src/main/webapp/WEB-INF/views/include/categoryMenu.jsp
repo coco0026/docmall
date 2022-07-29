@@ -82,7 +82,9 @@
       e.preventDefault();
 
       let cate_code_child = $(this).attr("href");
-      location.href = "/user/product/productList/" + cate_code_child
+      let cate_code_child_nm = $(this).html();
+      
+      location.href = "/user/product/productList/" + cate_code_child+"/"+encodeURIComponent(cate_code_child_nm);
 
 
 

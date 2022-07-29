@@ -42,7 +42,10 @@
 <%@include file="/WEB-INF/views/include/header.jsp" %>
 <%@include file="/WEB-INF/views/include/categoryMenu.jsp" %>
 
-
+	<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+	  <h1 class="display-4">${ cate_code_child_nm}</h1>
+	</div>
+	
 
 	<div class="container">
 
@@ -52,7 +55,10 @@
 	          <div class="card mb-4 shadow-sm">
 	            <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg> -->
 	            <!-- 상품이미지 -->
-	            <img alt="이미지준비" class="bd-placeholder-img card-img-top" width="100%" height="225"  src="/user/product/displayFile?folderName=${productVO.gds_img_folder}&fileName=s_${productVO.gds_img}" onerror="this.onerror=null; this.src='/img/noIMG.png'" /><!-- onerror 네트웍 상황에따라 이미지를 불러올 수 없을경우 대체이미지 -->	
+	            <a class="move" href="${productVO.gds_code}">
+	            	<img alt="이미지준비" class="bd-placeholder-img card-img-top" width="100%" height="225"  
+	            	src="/user/product/displayFile?folderName=${productVO.gds_img_folder}&fileName=s_${productVO.gds_img}" onerror="this.onerror=null; this.src='/img/noIMG.png'" /><!-- onerror 네트웍 상황에따라 이미지를 불러올 수 없을경우 대체이미지 -->	
+	            </a>
 	            <div class="card-body">
 	              <p class="card-text">
 	              	<c:out value="${productVO.gds_nm}" /><br>
@@ -69,12 +75,51 @@
 	        </div>
         </c:forEach>
       </div>
+      <div class="row">
+      	<div class="col-12">
+      		<nav aria-label="...">
+				<ul class="pagination">
+					<!-- 이전표시 -->
+					<c:if test="${pageMaker.prev }">
+						<li class="page-item">
+						<a class="page-link" href="${pageMaker.startPage - 1 }">Previous</a>
+						</li>
+					</c:if>
+					<!-- 페이지번호 표시.  1  2  3  4  5 -->
+					<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="num" >
+						<li class='page-item ${pageMaker.cri.pageNum == num ? "active": "" }'><a class="page-link" href="${num}">${num}</a></li>
+					</c:forEach>
+					<!-- 
+					<li class="page-item active" aria-current="page">
+					<span class="page-link">2</span>
+					</li>
+					<li class="page-item"><a class="page-link" href="#">3</a></li>
+					-->
+					<!-- 다음표시 -->
+					<c:if test="${pageMaker.next }">
+						<li class="page-item">
+						<a class="page-link" href="${pageMaker.endPage + 1 }">Next</a>
+						</li>
+					</c:if>
+				</ul>
+				<!--페이지 번호 클릭시 list주소로 보낼 파라미터 작업-->
+				<form id="actionForm" action="" method="get">
+					<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
+					<input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+					<input type="hidden" name="type" value="${pageMaker.cri.type}">
+					<input type="hidden" name="keyword" value="${pageMaker.cri.keyword}">
+					<input type="hidden" name="common_code_child" value="${common_code_child}">
+					<input type="hidden" name="cate_code_child_nm" value="${cate_code_child_nm}">
+				</form>
+			</nav>
+      	</div>
+      </div>
       
+	</div>
       <!--  footer.jsp -->
   	  <%@include file="/WEB-INF/views/include/footer.jsp" %>
   
   
-	</div>
 	
 	
 	<div class="modal fade" id="modalProductDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -110,7 +155,7 @@
 						<div class="form-group row">
 							<label for="gds_cnt" class="col-form-label col-3">수량</label>
 							<div class="col-9">
-								<input type="number" class="form-control" id="cart_prchs_cnt" min="1" value="1">
+								<input type="number" class="form-control  w-25" id="cart_prchs_cnt" min="1" value="1">
 							</div>
 						</div>
 					</form>
@@ -128,6 +173,52 @@
 	<script>
 
 		$(function(){
+			
+			let actionForm = $("#actionForm"); // <form id="actionForm"> 참조
+			let searchForm = $("#searchForm");
+			
+			// 페이지 번호 클릭시 동작.  이전	1	2	3	4	5  다음
+			$("li.page-item a.page-link").on("click", function(e) {
+				e.preventDefault(); // 태그의 기본특성을 제거. <a>태그의 링크기능을 제거.
+				
+				/* 검색기능추가하여 아래구문은 사용안함.
+				let url = "list?pageNum=" + $(this).attr("href") + "&amount=10";
+				location.href = url;
+				*/
+
+				//현재 선택한 페이지번호 변경작업.   <input type="hidden" name="pageNum" value="값">
+				actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+				
+				let url = "/user/product/productList/${common_code_child}/" + encodeURIComponent("${cate_code_child_nm}");
+	
+				actionForm.attr("method", "get")
+				actionForm.attr("action", url);
+				actionForm.submit();
+
+
+			});
+
+			// 목록에서 제목을 클릭시 동작.(페이징 파라미터, 검색 파라미터, 글번호)
+			$("a.move").on("click", function(e) {
+				// $(this) : $("a.move") 선택자중 클릭된 a 태그
+				e.preventDefault(); // <a>태그의 링크기능을 취소.
+				let bno = $(this).attr("href");
+
+
+
+				actionForm.find("input[name='bno']").remove();
+
+				//<form>태그의 자식으로 추가됨.
+				actionForm.append("<input type='hidden' name='bno' value='" + bno + "'>");
+				actionForm.attr("action", "/board/get");
+
+				actionForm.submit();
+
+
+			});
+			
+			
+			
 
 			$("button[name='btnBuyCart']").on("click", function(){
 
@@ -166,7 +257,7 @@
 						if(result = "success"){
 							alert("장바구니에 추가되었습니다.");
 							if(confirm("장바구니로 이동하시겠습니까?")){
-								location.href = "";
+								location.href = "/user/cart/cart_list";
 							}
 
 						}
@@ -175,6 +266,33 @@
 				
 
 			});
+
+			
+
+			//상세화면
+			$("div.container a.move").on("click",function(e){
+				e.preventDefault();
+
+				let gds_code = $(this).attr("href");
+
+				actionForm.attr("method","get");
+				actionForm.attr("action","/user/product/productDetail");
+
+				actionForm.append("<input type='hidden' name='gds_code' value='"+gds_code+"'>");
+				actionForm.submit();
+
+			});
+
+
+
+
+
+
+
+
+
+
+
 			
 			
 			
