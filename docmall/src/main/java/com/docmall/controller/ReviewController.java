@@ -66,10 +66,12 @@ public class ReviewController {
 		cri.setPageNum(page);
 		
 		
+		log.info("cri : " + cri);
+		
 		List<ReviewVO> list =  service.reviewList(gds_code, cri);
 		map.put("list", list);
 		
-		PageDTO pageMaker = new PageDTO(cri, service.listCount(gds_code, cri));
+		PageDTO pageMaker = new PageDTO(cri, service.listCount(gds_code));
 		map.put("mageMaker", pageMaker);
 		
 		entity = new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);

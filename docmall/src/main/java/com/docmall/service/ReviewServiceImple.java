@@ -9,10 +9,12 @@ import com.docmall.domain.ReviewVO;
 import com.docmall.dto.Criteria;
 import com.docmall.mapper.ReviewMapper;
 
+import lombok.Setter;
+
 @Service
 public class ReviewServiceImple implements ReviewService {
 	
-	@Autowired
+	@Setter(onMethod_ = {@Autowired})
 	private ReviewMapper mapper;
 
 	@Override
@@ -28,9 +30,9 @@ public class ReviewServiceImple implements ReviewService {
 	}
 
 	@Override
-	public int listCount(Integer gds_code, Criteria cri) {
+	public int listCount(Integer gds_code) {
 		// TODO Auto-generated method stub
-		return 0;
+		return mapper.listCount(gds_code);
 	}
 
 }

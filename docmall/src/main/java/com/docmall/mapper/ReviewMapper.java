@@ -13,8 +13,8 @@ public interface ReviewMapper {
 	void create(ReviewVO vo);
 	
 	//리뷰 리스트
-	List<ReviewVO> reviewList(@Param("gds_code") Integer gds_code,  Criteria cri);
+	List<ReviewVO> reviewList(@Param("gds_code") Integer gds_code,  @Param("cri") Criteria cri);
 	
-	int listCount(Integer gds_code,  Criteria cri);
+	int listCount(Integer gds_code);
 
 }

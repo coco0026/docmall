@@ -53,6 +53,23 @@
   	<!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.js"></script> -->
   	<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+
+	<script id="reviewTemplate" type="text/x-handlebars-template">
+		{{#each .}}
+		<div class="list-group">
+			<div class="d-flex w-100 justify-content-between">
+			  <h6 class="mb-1">{{mbr_id}}</h6>
+			  <small>평점 : {{review_score}}</small>
+			</div>
+			<p class="mb-1">{{review_cn}}</p>
+			<small>{{prettifyDate review_reg_date}}</small>
+		</div>
+		<hr>
+		{{/each}}
+	</script>
+
+  	
     
     
   </head>
@@ -60,6 +77,7 @@
     
 <%@include file="/WEB-INF/views/include/header.jsp" %>
 <%@include file="/WEB-INF/views/include/categoryMenu.jsp" %>
+
 
 	<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
 	  <h1 class="display-4">${ cate_code_child_nm}</h1>
@@ -100,12 +118,25 @@
 			  </div>
 			  <div id="productDetailReview">
 				<div class="row">
-					<div class="col-6">REVIEW</div>
-					<div class="col-6">
+					<div class="col12">REVIEW</div>
+					
+					<!-- 리뷰 리스트 위치 -->
+					<div id="reviewListResult" class="col-12"></div>
+					
+					<div class="col12">
 						<button type="button" id="btnReview" class="btn btn-info">리뷰 쓰기</button>
 					</div>
-				</div>			  
+				</div>	
+				
+				<!--상품후기 페이징 출력위치-->
+		        <div>
+		          <nav aria-label="Page navigation example">
+		            <ul class="pagination" id="reviewPagingResult">
+		            </ul>
+		          </nav>
+		        </div>  		  
 			  </div>
+			  
 			</div>
 		</div>
 	  </div>
@@ -188,11 +219,10 @@
 					success : function(result){
 						if(result == "success"){
 							alert("상품후기가 등록되었습니다.");
-							
-							//상품후기 목록
-							$.getJSON("/user/review/list/123/1", function(data){
-								console.log("목록 : " + data.list[0].);
-							});
+
+							reviewPage = 1;
+							//  "/user/review/list/123/1",
+							url = "/user/review/list/" + ${productVO.gds_code } + "/" + reviewPage;
 							
 							
 							// 상품후기 대화상자 숨김
@@ -205,37 +235,171 @@
 
 						
 				});
-
-				
-
+		});
 
 
 
 
+			let reviewPage = 1;
+			let url = "/user/review/list/" + ${productVO.gds_code } + "/" + reviewPage;		
+			
+			getPage(url);
+
+			function getPage(pageInfo){
+				//상품후기 목록
+					$.getJSON(pageInfo, function(data){
+					//console.log("목록 : " + data.list[0].gds_code);
+					//console.log("목록 : " + data.pageMaker.startPage);
+
+					if(data.list.length > 0){
+
+						//상품후기목록
+						printReviewList(data.list, $("#reviewListResult"), $("#reviewTemplate"));
+
+						//페이징
+						printReviewPaging(data.pageMaker, $("#reviewPagingResult"));
+
+					}
 
 
 
 
+					});
+						
+			}
+
+			
+			//상품후기 출력 함수
+			let printReviewList  = function(reviewArrData, target, templateObj){
+
+				//핸들바 코드가 존재하는 상품후기 디자인코드를 컴파일함.
+				let template = Handlebars.compile(templateObj.html());
+
+				let html = template(reviewArrData);
+
+				target.children().empty();
+				target.append(html);
+			}
+
+			//상품 후기 등록일 : 사용자정의 Helper함수. 템플릿에서 사용함.
+			Handlebars.registerHelper("prettifyDate", function(timeValue){
+
+				let dateObj = new Date(timeValue);
+		        let year = dateObj.getFullYear();
+		        let month = dateObj.getMonth() + 1;
+		        let date = dateObj.getDate();
+		        let hour = dateObj.getHours();
+		        let minute = dateObj.getMinutes();
+
+		      return year + "/" + month + "/" + date + " " + hour + ":" + minute;
 
 			});
+			
+			
+			//별평점 표시하기
+		    Handlebars.registerHelper("displayStar", function(rating){
 
+		      let stars = "";
+		      switch(rating) {
+		        case 1:
+		          stars = "★☆☆☆☆";
+		          break;
+		        case 2:
+		          stars = "★★☆☆☆";
+		          break;
+		        case 3:
+		          stars = "★★★☆☆";
+		          break;
+		        case 4:
+		          stars = "★★★★☆";
+		          break;
+		        case 5:
+		          stars = "★★★★★";
+		          break;
+		          
+		      }
 
+		      return stars;
 
-
-
-
-
+		    });
 
 			
 			
+
+			//아이디 4글자만 보여주기
+			Headers.registerHelper("idfourdisplay", function(userid){
+				
+				let userID = userid.substring(0,4);
+				let mbridLeng = (userid.length() - 4);
+				
+				for(let i=0; i<mbridLeng; i++){
+					userID += "*";
+				}
+				
+				return userID;
+			});
 			
 			
+			
+
+			//상품후기 페이징 함수
+			let printReviewPaging = function(pageMaker, target){
+
+				let pagingStr = ""
+
+				//이전
+				if(pageMaker.prev){
+					pagingStr =+ "<li  class='page-item'><a class='page-link' href='" + (pageMaker.startPage - 1) + "'> << a </a></li>";
+				}
+
+				//페이지번호
+				for(let i=pageMaker.startPage; i <= pageMaker.endPage; i++){
+
+					let classStr = pageMaker.cri.pageNum == i ? "class=active'" : "";
+					pagingStr += "<li class='page-item'" + classStr + "><a class='page-link' href='" + i + "'>" + i + "</a></li>";
+
+				}
+
+				//다음표시
+				if(pageMaker.next){
+
+					pagingStr += "<li class='page-item'><a class='page-link' href='" + (pageMaker.startPage - 1) + "'> >> a </a></li>";
+
+				}
+
+				
+				target.children().remove();
+				target.append(pagingStr);
+
+			}
+
+
+		
+			//이전, 페이지번호, 다음
+			$("nav ul#reviewPagingResult").on("click", "li a.page-link", function(e){
+				e.preventDefault();
+				console.log("페이지번호 클릭");
+
+				//상품 후기 목록
+				reviewPage = $(this).attr("href");
+				url = "/user/review/list/" + $("#gds_code") + "/" + reviewPage;
+				
+				
+				getPage(url);
+				
+			});
 			
 			
 
 		});
 
 	</script>
+
+	<!-- 상품후기 출력위치 -->
+
+
+
+	<!-- 상품후기 페이징 출력 위치 -->
 	
 	
 	<!-- 상품후기 modal dialog -->
