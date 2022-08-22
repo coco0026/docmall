@@ -11,5 +11,7 @@ public interface CommonCodeService {
 	
 	//자식코드
 	List<CommonCodeVO> getSubCommonCode(String common_code);
+	
+	List<CommonCodeVO> getSubCommonCodeTmp(String tmp);
 
 }

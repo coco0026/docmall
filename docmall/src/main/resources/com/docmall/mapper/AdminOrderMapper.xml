@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.docmall.mapper.AdminOrderMapper">
+
+
+
+	<sql id="criteria">
+		<trim prefix="("   prefixOverrides="OR">
+			<foreach collection="cri.typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'M'.toString()">
+							MBR_ID LIKE '%' || #{cri.keyword} || '%'
+						</when>
+						<when test="type == 'O'.toString()">
+							ORDER_CODE LIKE '%' || #{cri.keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<!-- 날짜조건검색 -->
+	<sql id="period">
+	
+		<if test="startDate != null and !startDate.equals('')">
+			<![CDATA[
+			ORDER_DATE >= TO_DATE(#{startDate}, 'YYYY-MM-DD') AND
+			ORDER_DATE <  TO_DATE(#{endDate}, 'YYYY-MM-DD') +1 AND
+			]]>
+		</if>
+	
+	</sql>
+
+
+		<!-- 1)데이타(목록)  /*+ INDEX_DESC(GOODS_TBL PK_GDS_CODE)*/(인덱스헌트)-->
+	<select id="getOrderList" parameterType="com.docmall.dto.Criteria" resultType="com.docmall.domain.OrderVO">
+		<![CDATA[
+		SELECT RN, 
+			   ORDER_CODE, 
+			   MBR_ID, 
+			   ORDER_MBR_NM, 
+			   ORDER_MBR_ZIP, 
+			   ORDER_MBR_ADDR, 
+			   ORDER_MBR_DADDR,
+			   ORDER_MBR_TELNO, 
+			   ORDER_TOT_AMT, 
+			   ORDER_DATE, 
+			   ORDER_PROCESS, 
+			   PAYMENT_PROCESS, 
+			   CS_PROCESS
+		FROM (
+		      SELECT  /*+ INDEX_DESC(ORDER_TBL PK_ORDER_CODE)*/ ROWNUM RN, 
+		            ORDER_CODE, 
+		            MBR_ID, 
+		            ORDER_MBR_NM, 
+		            ORDER_MBR_ZIP, 
+		            ORDER_MBR_ADDR, 
+		            ORDER_MBR_DADDR, 
+		            ORDER_MBR_TELNO, 
+		            ORDER_TOT_AMT, 
+		            ORDER_DATE, 
+		            ORDER_PROCESS, 
+		            PAYMENT_PROCESS, 
+		            CS_PROCESS
+		      FROM ORDER_TBL
+		      WHERE                                   
+		]]>    
+			  <include refid="period"></include> 
+			  <include refid="criteria"></include> 
+		<![CDATA[ 
+			  ROWNUM <= #{cri.pageNum} * #{cri.amount}
+			  )
+			  	WHERE 
+			  	RN > (#{cri.pageNum}-1) * #{cri.amount}
+		]]>
+	</select>
+	
+	<!-- 2)테이블 데이타개수 : 페이징구현사용 -->
+	<select id="getOrderTotalCount" parameterType="com.docmall.dto.Criteria" resultType="int">
+		SELECT COUNT(*) 
+		FROM ORDER_TBL 
+		WHERE
+		<include refid="period"></include> 
+		<include refid="criteria"></include> 
+		ORDER_CODE > 0
+	</select>
+	
+	<!-- 배송프로세스 변경 -->
+	<update id="orderProcessChange">
+		UPDATE ORDER_TBL SET
+			ORDER_PROCESS = #{order_process}
+		WHERE ORDER_CODE = #{order_code}
+	</update>
+
+
+	<!-- 선택삭제 -->
+	<delete id="orderDel">
+		DELETE FROM ORDER_TBL
+		WHERE ORDER_CODE = #{order_code}
+	</delete>
+	
+	<!-- 선택삭제 db처리 -->
+	<!-- <delete id="orderDel">
+		DELETE FROM ORDER_TBL
+		WHERE ORDER_CODE IN
+		<foreach collection="list" item="order_code" open="(" close=")" separator=",">
+			#{order_code}
+		</foreach>
+	</delete> -->
+	
+	
+	<!-- 주문정보 -->
+	<select id="getOrderInfo" resultType="com.docmall.domain.OrderVO">
+		SELECT ORDER_CODE, 
+			   MBR_ID, 
+			   ORDER_MBR_NM, 
+			   ORDER_MBR_ZIP, 
+			   ORDER_MBR_ADDR, 
+			   ORDER_MBR_DADDR, 
+			   ORDER_MBR_TELNO, 
+			   ORDER_TOT_AMT, 
+			   ORDER_DATE, 
+			   ORDER_PROCESS, 
+			   PAYMENT_PROCESS, 
+			   CS_PROCESS
+		FROM ORDER_TBL
+		WHERE ORDER_CODE = #{order_code}
+	</select>
+	
+	<!-- 결제정보 -->
+	<select id="getPaymentInfo" resultType="com.docmall.domain.PayMentVO">
+		SELECT PAY_CODE, 
+			   ORDER_CODE, 
+			   PAY_METHOD, 
+			   PAY_DATE, 
+			   PAY_TOT_PRICE, 
+			   PAY_REST_PRICE, 
+			   PAY_NOBANK_PRICE, 
+			   PAY_NOBANK_USER_NM, 
+			   PAY_NOBANK
+		FROM PAYMENT_TBL
+		WHERE ORDER_CODE = #{order_code}
+	</select>
+
+	<!-- 주문상세정보 -->
+	<select id="getOrderDetailInfo" parameterType="Long" resultType="map">
+		SELECT C.GDS_IMG,
+		       C.GDS_IMG_FOLDER,
+		       C.GDS_NM,
+		       B.ORDER_DTL_CNT,
+		       B.ORDER_DTL_AMT * B.ORDER_DTL_CNT AS ORDER_DTL_AMT,
+		       A.ORDER_PROCESS,
+		       A.ORDER_CODE,
+		       B.GDS_CODE
+		FROM ORDER_TBL A, ORDER_DETAIL_TBL B, GOODS_TBL C
+		WHERE A.ORDER_CODE = B.ORDER_CODE AND
+		      B.GDS_CODE = C.GDS_CODE AND
+		      A.ORDER_CODE = #{order_code}
+	</select>
+
+
+
+	<!-- 주문상품 개별취소 기능 -->
+	<delete id="orderDetailProductDelete">
+		DELETE FROM ORDER_DETAIL_TBL
+		WHERE ORDER_CODE = #{order_code} AND GDS_CODE = #{gds_code}
+	</delete>
+	
+	<update id="orderTotalPriceChange">
+		UPDATE ORDER_TBL SET
+			ORDER_TOT_AMT = ORDER_TOT_AMT - #{order_dtl_amt}
+		WHERE ORDER_CODE = #{order_code}
+	</update>
+
+	<update id="paymentTotalPriceChange">
+		UPDATE PAYMENT_TBL SET
+			PAY_TOT_PRICE = PAY_TOT_PRICE - #{order_dtl_amt}
+		WHERE ORDER_CODE = #{order_code}
+	</update>
+
+
+
+
+
+
+</mapper>

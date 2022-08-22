@@ -79,7 +79,7 @@
               </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#">주문목록</a></li>
+            <li><a href="/admin/order/adminOrderList">주문목록</a></li>
           </ul>
         </li>
         

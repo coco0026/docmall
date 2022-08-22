@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+ <div class="container">
+ 
+ 	<form id="modifyForm" action="modify" method="post">
+		  <div>
+		    <label for="userid" >아이디</label>
+		    <div class="col-sm-5">
+		      <input type="text"  id="userid" name="userid" value="">
+		      <button type="button" class="btn btn-dark" id="btnSave">아이디중복확인</button>
+		      (영문 소문자,숫자4~16자)
+		    </div>
+		  </div>
+		  <div>
+		    <label for="pass">비밀번호</label>
+		    <div class="col-sm-5">
+		      <input type="password"  id="pass" name="pass"  placeholder="비밀번호를  입력하세요">
+		      	영문/최소 1개의 숫자 또는 특수문자조합으로 8~16자리
+		    </div>
+		  </div>
+		  <div>
+		    <label for="pass2">비밀번호확인</label>
+		    <div class="col-sm-5">
+		      <input type="password"  id="pass2" name="pass2" >
+		    </div>
+		  </div>
+		  <div>
+		    <label for="username">이름</label>
+		    <div>
+		      <input type="text" id="username" name="username">
+		    </div>
+		  </div>
+		  <div>
+		    <label for="email1">전자우편</label>
+		    <div>
+		      <input type="text" id="email1" name="email1">@
+		      <input type="text" id="email2" name="email2">
+		    </div>
+		  </div>
+		  <div>
+		      <label for="emailchk1">메일 수신동의</label>
+			  <div>
+			  	<input type="radio" value="Y" id="emailchk1" name="emailchk">수신
+			  	<input type="radio" value="Y" id="emailchk2" name="emailchk">수신안함
+			  </div>			
+		  </div>
+		  <div>
+		      <label for="question">비밀번호 확인시 질문</label>
+			  <div>
+			  	<select id="question" name="question">
+			  		<option value="">=======선택=========</option>
+			  		<option value="1111">1111</option>
+			  	</select>
+			  </div>			
+		  </div>
+		  <div>
+		      <label for="answer">비밀번호 확인시 답변</label>
+			  <div>
+		  		 <input type="text" id="answer" name="answer">
+			  </div>			
+		  </div>
+		   <div>
+		      <label for="gender1"></label>
+			  <div>
+		  		<input type="radio" value="Y" id="gender1" name="gender">남자
+			  	<input type="radio" value="Y" id="gender2" name="gender">여자
+			  </div>			
+		  </div>
+		   <div>
+		      <label for="defaultCheck1">비밀번호 확인시 답변</label>
+			  <div>
+		  		 <select id="byear" name="byear">
+			  		<option value="">년도선택</option>
+			  		<option value="2022">2022</option>
+			  	</select>
+			  	<select id="bmonth" name="bmonth">
+			  		<option value="">월선택</option>
+			  		<option value="08">08</option>
+			  	</select>
+			  	<select id="bday" name="bday">
+			  		<option value="">일선택</option>
+			  		<option value="22">22</option>
+			  	</select>
+			  </div>			
+		  </div>
+		  
+		  
+		  <div class="form-group row">
+			  <div class="col-sm-12 text-center">
+			  	<button type="button" class="btn btn-dark" id="btnSave">회원가입</button>
+			  </div>			
+		  </div>
+	 </form>
+ 
+ 
+ 
+ 
+ 
+ </div>
+  
+  <script>
+
+  $(document).ready(function(){
+
+		//유효성 검사
+		//한글
+		let kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+		//숫자
+		let num = /[0-9]/g;
+		//영문
+		let eng = /[a-z]/ig;
+		//특수문자
+		let spe = /[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi;
+
+		$("#btnSave").on("click", function(){
+			
+
+			//아이디 유효성검사
+			let userid = $("#userid").val();
+			if(userid == ""){
+				alert("아이디를 입력해주세요.");
+				return;
+			}else if(userid.length < 4 || userid.length > 10) {
+				alert("아이디는 4자리에서 10자리 이내로 입력해주세요.");
+				$("#userid").focus();
+				return;
+			}else if(userid.search(/\s/) != -1){
+				alert("아이디는 공백 없이 입력해주세요.");
+				$("#userid").focus();
+				return;
+			}else if(pass.search(spe)){
+				alert("아이디는 특수문자가 들어갈 수 없습니다..");
+				$("#userid").focus();
+				return;
+			}
+			
+			//비밀번호 유효성검사
+			let pass = $("#pass").val();
+			let pass_chck = $("#pass2").val();
+			if(pass == ""){
+				alert("비밀번호를 입력해주세요.");
+				return;
+			}else if(pass.length < 4 || pass.length > 10){
+				alert("비밀번호는 4자리에서 10자리 이내로 입력해주세요.");
+				$("#pass").focus();
+				return;
+			}else if(pass.search(/\s/) != -1){
+				alert("비밀번호는 공백 없이 입력해주세요.");
+				$("#pass").focus();
+				return;
+			}else if(pass.search(num) < 0 || pass.search(eng) < 0 || pass.search(spe) < 0 ){
+				alert("비밀번호는 영문,숫자, 특수문자를 혼합하여 입력해주세요.");
+				$("#pass").focus();
+				return;
+			}
+			
+			//비밀번호 확인 일치
+			if(pass != pass_chck){
+				alert("비밀번호 확인이 일치하지 않습니다.");
+				return;
+			} 
+			//비밀번호 유효성 검사 End--------------------------------------
+			
+			
+			
+			let username = $("#username").val();
+			//이름 입력 확인
+			if(username == "") {
+				alert("이름을 입력하세요");
+				$("#username").focus();
+				return;
+			}else if(username.search(/\s/) != -1){
+				alert("이름은 공백 없이 입력해주세요.");
+				$("#username").focus();
+				return;
+			}else if(username.length > 10){
+				alert("이름은 10자이내로 입력해주세요.");
+				$("#username").focus();
+				return;
+			}
+			
+			let email1 = $("#email1").val();
+			let email2 = $("#email2").val();
+			if(email1 == "") {
+				alert("메일주소를 입력하세요");
+				$("#email1").focus();
+				return;
+			}else if(email1.search(/\s/) != -1){
+				alert("메일은 공백 없이 입력해주세요.");
+				$("#email1").focus();
+				return;
+			}
+			
+			if(email2 == "") {
+				alert("메일주소를 입력하세요");
+				$("#email2").focus();
+				return;
+			}else if(email2.search(/\s/) != -1){
+				alert("메일은 공백 없이 입력해주세요.");
+				$("#email2").focus();
+				return;
+			}
+			
+			
+			
+			let emailchk = $("input[name=emailchk]:radio:checked");
+			if(emailchk.length < 1){
+				alert("메일 수신여부를 체크해주세요.");
+				return;
+			}
+			
+			let question = $("#question").val();
+			if(question == "") {
+				alert("비밀번호 확인시 질문을 선택하세요");
+				$("#question").focus();
+				return;
+			}
+			
+			let answer = $("#answer").val();
+			if(answer == "") {
+				alert("비밀번호 확인시 답변을 입력하세요");
+				$("#answer").focus();
+				return;
+			}
+			
+			
+			let gender = $("input[name=gender]:radio:checked");
+			if(gender.length < 1){
+				alert("성별을 체크해주세요.");
+				return;
+			}
+			
+			
+			let byear = $("#byear").val();
+			let bmonth = $("#bmonth").val();
+			let bday = $("#bday").val();
+			if(byear == "") {
+				alert("년도를 선택하세요");
+				$("#byear").focus();
+				return;
+			}
+			if(bmonth == "") {
+				alert("월을 선택하세요");
+				$("#byear").focus();
+				return;
+			}
+			if(bday == "") {
+				alert("일을 선택하세요");
+				$("#byear").focus();
+				return;
+			}
+			
+			
+		});
+		
+
+	});
+  
+  
+  </script>
+	  
+</body>
+
+</html>

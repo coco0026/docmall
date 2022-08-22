@@ -16,7 +16,9 @@ public interface ReviewService {
 	
 	//리뷰 리스트
 	List<ReviewVO> reviewList(@Param("gds_code") Integer gds_code,  Criteria cri);
+	int listCount(Integer gds_code); // 리스트 수
 	
-	int listCount(Integer gds_code);
+	//리뷰수정
+	void modify(ReviewVO vo);
 
 }

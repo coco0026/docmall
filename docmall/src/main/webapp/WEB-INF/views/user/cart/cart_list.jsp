@@ -204,11 +204,12 @@
 
 			});
 			
-			//주문하기
+			//주문하기(장바구니 페이지에서 구매)
 			$("button[name='btnOrder']").on("click",function(){
 				
+				let type = "cartOrder";
 				
-				location.href = "";
+				location.href = "/user/order/orderListInfo?type=" + type;
 
 			});
 			

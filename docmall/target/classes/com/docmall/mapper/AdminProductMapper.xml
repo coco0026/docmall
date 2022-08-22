@@ -35,7 +35,7 @@
 				</choose>
 				<choose>
 					<when test="cate_code_child != null">
-						<if test="type != '' || cate_code != ''">
+						<if test="type != '' or cate_code != ''">
 							AND 
 						</if>
 						CATE_CODE_CHILD LIKE '%' || #{cate_code_child} || '%'

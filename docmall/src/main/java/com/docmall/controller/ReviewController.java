@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,6 +55,24 @@ public class ReviewController {
 		return entity;
 	}
 	
+	//리뷰 수정.  resp api개발
+	@PatchMapping(value = "/modify", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> modify(@RequestBody ReviewVO vo, HttpSession session) {
+		
+		ResponseEntity<String> entity = null;
+
+		String mem_id = ((MemberVO) session.getAttribute("loginStatus")).getMbr_id();
+		vo.setMbr_id(mem_id);
+		
+		log.info("상품후기: " + vo);
+		
+		service.modify(vo);
+		
+		entity = new ResponseEntity<String>("success", HttpStatus.OK);
+		
+		return entity;
+	}
+	
 	
 	//리뷰 리스트
 	@GetMapping("/list/{gds_code}/{page}")
@@ -72,7 +91,7 @@ public class ReviewController {
 		map.put("list", list);
 		
 		PageDTO pageMaker = new PageDTO(cri, service.listCount(gds_code));
-		map.put("mageMaker", pageMaker);
+		map.put("pageMaker", pageMaker);
 		
 		entity = new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 		

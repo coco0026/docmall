@@ -14,7 +14,8 @@ public interface ReviewMapper {
 	
 	//리뷰 리스트
 	List<ReviewVO> reviewList(@Param("gds_code") Integer gds_code,  @Param("cri") Criteria cri);
-	
-	int listCount(Integer gds_code);
+	int listCount(Integer gds_code);//리스트 수
 
+	//상품수정
+	void modify(ReviewVO vo);
 }

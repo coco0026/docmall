@@ -21,8 +21,6 @@ public class Criteria {
 	private String cate_code; // 상품종류(1차카테고리)
 	private String cate_code_child; // 상품종류(2차카테고리)
 	private String keyword; // 검색어
-	private String keywordCt1; // 상품종류(2차카테고리)
-	private String keywordCt2; // 상품종류(2차카테고리)
 	
 	//기본생성자 정의
 	public Criteria() {

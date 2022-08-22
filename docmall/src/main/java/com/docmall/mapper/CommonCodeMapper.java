@@ -11,4 +11,7 @@ public interface CommonCodeMapper {
 	
 	//자식코드 카테고리
 	List<CommonCodeVO> getSubCommonCode(String common_code);
+	
+	List<CommonCodeVO> getSubCommonCodeTmp(String tmp);
+	
 }

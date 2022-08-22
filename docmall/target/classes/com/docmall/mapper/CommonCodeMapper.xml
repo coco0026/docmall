@@ -25,6 +25,17 @@
 			  COMMON_CODE_CHILD_USE_YN = 'Y'
 	</select>
 	
+	<!-- 자식코드 셀렉트 -->
+	<select id="getSubCommonCodeTmp" resultType="com.docmall.domain.CommonCodeVO">
+		SELECT COMMON_CODE,
+			   COMMON_CODE_CHILD_NM,
+			   COMMON_CODE_CHILD,
+			   COMMON_CODE_CHILD_USE_YN
+		FROM COMMON_CODE_DETAIL_TBL		
+		WHERE COMMON_CODE = #{tmp} AND
+			  COMMON_CODE_CHILD_USE_YN = 'Y'
+	</select>
+	
 	
 	
 </mapper>

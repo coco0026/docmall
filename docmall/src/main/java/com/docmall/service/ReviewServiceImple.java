@@ -35,4 +35,10 @@ public class ReviewServiceImple implements ReviewService {
 		return mapper.listCount(gds_code);
 	}
 
+	@Override
+	public void modify(ReviewVO vo) {
+		// TODO Auto-generated method stub
+		mapper.modify(vo);
+	}
+
 }

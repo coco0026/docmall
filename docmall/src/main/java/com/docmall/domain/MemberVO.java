@@ -21,9 +21,12 @@ public class MemberVO {
 	private Date mbr_update_date; //수정일
 	private Date mbr_cntn_date; //최근 접속시간(로그인시간)
 	
+	
+	
 	//MEMBER_DETAIL_TBL
 	private int mbr_point_ny; //적립금
 	private String mbr_grade_code; //회원등급
+	private String common_code_child_nm; //회원등급 nm
 	private int mbr_accumulate_my; //누적금액
 	
 	//프로시저 에러 OUT변수

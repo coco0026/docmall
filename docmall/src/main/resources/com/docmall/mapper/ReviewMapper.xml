@@ -56,7 +56,13 @@
 	</select>
 
 
-
+	<update id="modify">
+		UPDATE REVIEW_TBL
+		SET	 REVIEW_CN = #{review_cn}, 
+			 REVIEW_SCORE = #{review_score}, 
+			 REVIEW_REG_DATE = SYSDATE
+		WHERE REVIEW_NO = #{review_no}
+	</update>
 
 
 

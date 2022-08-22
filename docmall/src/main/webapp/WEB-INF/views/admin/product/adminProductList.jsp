@@ -74,15 +74,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
 									<label for="gds_nm" class="col-sm-2 col-form-label">검색분류</label>
 									<div class="col-sm-5">
 									<select class="form-control form-control-sm-md" name="type">
-									<option value="" <c:out value="${pageMaker.cri.type == null ? 'selected' : '' }" />>검색분류</option>
-									<option value="N" <c:out value="${pageMaker.cri.type eq 'N' ? 'selected' : '' }" />>상품이름</option><!-- GDS_NM -->
-									<option value="C" <c:out value="${pageMaker.cri.type eq 'C' ? 'selected' : '' }" />>상품코드</option><!-- GDS_NM -->
+										<option value="" <c:out value="${pageMaker.cri.type == null ? 'selected' : '' }" />>검색분류</option>
+										<option value="N" <c:out value="${pageMaker.cri.type eq 'N' ? 'selected' : '' }" />>상품이름</option><!-- GDS_NM -->
+										<option value="C" <c:out value="${pageMaker.cri.type eq 'C' ? 'selected' : '' }" />>상품코드</option><!-- GDS_NM -->
 									</select>
 									</div>
 									<div class="col-sm-5">
-									<input type="text" class="form-control mr-sm-2" name="keyword" placeholder="Search" value="${pageMaker.cri.keyword }">
-									<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
-									<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+										<input type="text" class="form-control mr-sm-2" name="keyword" placeholder="Search" value="${pageMaker.cri.keyword }">
+										<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+										<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
 									</div>
 								</div>
 								<div class="form-group row">

@@ -27,4 +27,10 @@ public class CommonCodeServiceImple implements CommonCodeService {
 		return mapper.getSubCommonCode(common_code);
 	}
 
+	@Override
+	public List<CommonCodeVO> getSubCommonCodeTmp(String tmp) {
+		// TODO Auto-generated method stub
+		return mapper.getSubCommonCodeTmp(tmp);
+	}
+
 }

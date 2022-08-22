@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.docmall.mapper.OrderMapper">
+
+
+
+	<select id="cartOrderList" resultType="com.docmall.domain.CartOrderVOInfo">
+		SELECT A.CART_CODE, 
+		       A.MBR_ID,
+		       A.CART_PRCHS_CNT,
+		       B.GDS_NM,
+		       B.GDS_PRICE,
+		       B.GDS_DSCNT,
+		       B.GDS_SALE_CNT,
+		       B.GDS_IMG,
+       		   B.GDS_IMG_FOLDER
+		FROM CART_TBL A, GOODS_TBL B
+		WHERE A.GDS_CODE = B.GDS_CODE AND
+		      A.MBR_ID = #{mbr_id}
+	</select>
+	
+	<select id="directOrderList" resultType="com.docmall.domain.CartOrderVOInfo">
+		SELECT GDS_CODE,
+			   GDS_NM,
+		       GDS_PRICE,
+		       #{cart_prchs_cnt} AS CART_PRCHS_CNT,
+		       GDS_DSCNT,
+		       GDS_SALE_CNT,
+		       GDS_IMG,
+       		   GDS_IMG_FOLDER
+		FROM   GOODS_TBL
+		WHERE GDS_CODE = #{gds_code} 
+	</select>
+	
+	<insert id="orderSave" parameterType="com.docmall.domain.OrderVO">
+	
+		<selectKey keyProperty="order_code" order="BEFORE" resultType="Long">
+			SELECT SEQ_ORDER_CODE.NEXTVAL FROM DUAL
+		</selectKey>
+		
+			INSERT INTO ORDER_TBL(
+			   ORDER_CODE, 
+			   MBR_ID, 
+			   ORDER_MBR_NM, 
+			   ORDER_MBR_ZIP, 
+			   ORDER_MBR_ADDR, 
+			   ORDER_MBR_DADDR, 
+			   ORDER_MBR_TELNO,
+			   ORDER_TOT_AMT,
+			   PAYMENT_PROCESS
+			)VALUES(
+			   #{order_code}, 
+			   #{mbr_id}, 
+			   #{order_mbr_nm}, 
+			   #{order_mbr_zip}, 
+			   #{order_mbr_addr}, 
+			   #{order_mbr_daddr}, 
+			   #{order_mbr_telno},
+			   #{order_tot_amt},
+			   #{payment_process}
+			)
+		
+	</insert>
+	
+	
+	
+	<insert id="orderDetailSave">
+	
+	INSERT INTO ORDER_DETAIL_TBL(
+		ORDER_CODE, 
+		GDS_CODE,
+		ORDER_DTL_CNT, 
+		ORDER_DTL_AMT
+	)
+	SELECT 
+	    #{order_code}, 
+	    A.GDS_CODE, 
+	    A.CART_PRCHS_CNT, 
+	    B.GDS_PRICE
+	FROM CART_TBL A, GOODS_TBL B
+	WHERE A.GDS_CODE = B.GDS_CODE AND
+	      MBR_ID = #{mbr_id}
+		
+	</insert>
+	
+	
+	<insert id="paymentSave" parameterType="com.docmall.domain.PayMentVO">
+	
+		INSERT INTO PAYMENT_TBL(
+			PAY_CODE, 
+			ORDER_CODE, 
+			PAY_METHOD, 
+			PAY_DATE, 
+			PAY_TOT_PRICE, 
+			PAY_REST_PRICE
+			<if test="pay_nobank_user_nm != null and !pay_nobank_user_nm.equals('')">
+				, PAY_NOBANK_PRICE, 
+				PAY_NOBANK_USER_NM, 
+				PAY_NOBANK
+			</if>
+		)VALUES(
+			SEQ_PAY_CODE.NEXTVAL, 
+			#{order_code}, 
+			#{pay_method}, 
+			SYSDATE, 
+			#{pay_tot_price}, 
+			#{pay_rest_price}
+			<if test="pay_nobank_user_nm != null and !pay_nobank_user_nm.equals('')">
+				, #{pay_nobank_price}, 
+				#{pay_nobank_user_nm}, 
+				#{pay_nobank}
+			</if>
+		)
+	
+	</insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

@@ -181,12 +181,7 @@
 			$("li.page-item a.page-link").on("click", function(e) {
 				e.preventDefault(); // 태그의 기본특성을 제거. <a>태그의 링크기능을 제거.
 				
-				/* 검색기능추가하여 아래구문은 사용안함.
-				let url = "list?pageNum=" + $(this).attr("href") + "&amount=10";
-				location.href = url;
-				*/
-
-				//현재 선택한 페이지번호 변경작업.   <input type="hidden" name="pageNum" value="값">
+				
 				actionForm.find("input[name='pageNum']").val($(this).attr("href"));
 				
 				let url = "/user/product/productList/${common_code_child}/" + encodeURIComponent("${cate_code_child_nm}");
@@ -264,6 +259,18 @@
 					}
 				});
 				
+
+			});
+			
+			//직접구매 클릭시 non-ajax
+			$("button[name='btnModalBuy']").on("click", function(){
+
+			let gds_code = $("div#modalProductDetail input#gds_code").val(); //구매상품코드
+			let cart_prchs_cnt = $("div#modalProductDetail input#cart_prchs_cnt").val(); //구매수량
+
+			location.href = "/user/order/orderListInfo?gds_code="+gds_code+"&cart_prchs_cnt="+cart_prchs_cnt+"&type=direct";
+			
+
 
 			});
 

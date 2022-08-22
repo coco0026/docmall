@@ -78,10 +78,13 @@
         	   A.MBR_EML_ADDR_YN,
         	   B.MBR_POINT_NY,
         	   B.MBR_GRADE_CODE,
-        	   B.MBR_ACCUMULATE_MY
+        	   B.MBR_ACCUMULATE_MY,
+        	   C.COMMON_CODE_CHILD_NM
 		FROM MEMBER_TBL A, 
-			 MEMBER_DETAIL_TBL B
+			 MEMBER_DETAIL_TBL B,
+			 COMMON_CODE_DETAIL_TBL C
 		WHERE A.MBR_ID = B.MBR_ID AND
+			  B.MBR_GRADE_CODE = C.COMMON_CODE_CHILD AND
               A.MBR_ID = #{mbr_id}
 	</select>
 	

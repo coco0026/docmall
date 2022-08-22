@@ -76,7 +76,7 @@ public class ProductController {
 		
 		log.info("2차 카테고리 : " + cate_code_child);
 		
-		cri.setAmount(30);//페이지 상품수
+		cri.setAmount(9);//페이지 상품수
 		
 		List<ProductVO> productList = service.getProductListBySubCategory(cate_code_child, cri);
 		
