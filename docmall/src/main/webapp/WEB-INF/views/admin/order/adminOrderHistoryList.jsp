@@ -66,88 +66,118 @@ scratch. This page gets rid of all links and provides the needed markup only.
 				<div class="col-md-12">
 					<div class="box box-primary">
 						<div class="box-header">
-							LIST ORDER DETAIL				
+							LIST ORDER HISTORY			
 						</div>
 						<div class="box-body">
-							<h2>주문상세정보</h2>
-							<h5>주문정보</h5>
-							<table class="table table-bordered">
-							  <thead>
-							    <tr>
-							      <th scope="col">주문번호</th>
-							      <td scope="col"><c:out value="${orderVO.order_code }" /></td>
-							    </tr>
-							  </thead>
-							  <tbody>
-							    <tr>
-							      <th scope="col">주문일자</th>
-							      <td scope="col"><fmt:formatDate value="${orderVO.order_date }" pattern="yyyy-MM-dd hh:mm" /> </td>
-							    </tr>
-							    <tr>
-							      <th scope="col">주문자</th>
-							      <td scope="col"><c:out value="${orderVO.order_mbr_nm }" /></td>
-							    </tr>
-							    <tr>
-							      <th scope="col">주문처리상태</th>
-							      <td scope="col"><c:out value="${orderVO.payment_process }" /></td>
-							    </tr>
-							  </tbody>
-							</table>
+							<form id="searchForm" action="/admin/order/adminOrderList" method="get">
+								<div class="form-group row">
+									<label for="gds_nm" class="col-sm-2 col-form-label">검색분류</label>
+									<div class="col-sm-5">
+									<select class="form-control form-control-sm-md" name="type">
+										<option value="" <c:out value="${pageMaker.cri.type == null ? 'selected' : '' }" />>검색분류</option>
+										<option value="M" <c:out value="${pageMaker.cri.type eq 'M' ? 'selected' : '' }" />>주문자ID</option>
+										<option value="O" <c:out value="${pageMaker.cri.type eq 'O' ? 'selected' : '' }" />>주문번호</option>
+									</select>
+									</div>
+									<div class="col-sm-5">
+										<input type="text" class="form-control mr-sm-2" name="keyword" placeholder="Search" value="${pageMaker.cri.keyword }">
+										<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+										<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+										<input type="date" name="startDate" value="${startDate}"> ~ <input type="date" name="endDate" value="${endDate}"> 
+									</div>
+								</div>
 							
-							<h5>결제정보</h5>
-							<table class="table table-bordered">
-							  <thead>
-							    <tr>
-							      <th scope="col">총 주문금액</th>
-							      <td scope="col"><c:out value="${orderVO.order_tot_amt }" /></td>
-							    </tr>
-							  </thead>
-							  <tbody>
-							    <tr>
-							      <th scope="col">총 할인금액</th>
-							      <td scope="col"><c:out value="" /></td>
-							    </tr>
-							    <tr>
-							      <th scope="col">총 결제금액</th>
-							      <td scope="col"><c:out value="${payMentVO.pay_tot_price }" /></td>
-							    </tr>
-							    <tr>
-							      <th scope="col">결제수단</th>
-							      <td scope="col"><c:out value="${payMentVO.pay_method }" /></td>
-							    </tr>
-							  </tbody>
-							</table>
-							
-							<h5>주문상품정보</h5>
-							<table class="table table-bordered">
-							  <thead>
-							    <tr>
-							      <th scope="col">이미지</th>
-							      <th scope="col">상품정보</th>
-							      <th scope="col">수량</th>
-							      <th scope="col">상품구매금액</th>
-							      <th scope="col">주문처리상태</th>
-							      <th scope="col">취소/교환/반품</th>
-							    </tr>
-							  </thead>
-							  <tbody>
-								  <c:forEach items="${orderDetailMap }" var="orderDetailMap">
-								    <tr>
-								      <td scope="col">
-								      <img alt="이미지준비" src="/admin/order/displayFile?folderName=${orderDetailMap.GDS_IMG_FOLDER }&fileName=s_${orderDetailMap.GDS_IMG }" style="height: 80px; width: 55px;" onerror="this.onerror=null; this.src='/img/noIMG.png'" /><!-- onerror 네트웍 상황에따라 이미지를 불러올 수 없을경우 대체이미지 -->
-									  </td>
-								      <td scope="col"><c:out value="${orderDetailMap.GDS_NM }" /></td>
-								      <td scope="col"><c:out value="${orderDetailMap.ORDER_DTL_CNT }" /></td>
-								      <td scope="col"><c:out value="${orderDetailMap.ORDER_DTL_AMT }" /></td>
-								      <td scope="col"><c:out value="${orderDetailMap.ORDER_PROCESS }" /></td>
-								      <td scope="col"><button type="button" name="btnOrderCancel" data-order_code="${orderDetailMap.ORDER_CODE}"  data-gds_code="${orderDetailMap.GDS_CODE}" data-order_dtl_amt="${orderDetailMap.ORDER_DTL_AMT }" class="btn btn-info">주문취소</button></td>
-								    </tr>
-							      </c:forEach>
-							  </tbody>
-							</table>
-							
-							
-							
+								<div class="col-sm-5"></div>
+								
+								<div class="col-md-3">
+									<button class="btn btn-success btn-lg">Search</button>
+								</div>
+							</form>
+							<div class="col-sm-12">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+										<th scope="col">주문번호</th>
+										<th scope="col">주문자ID</th>
+										<th scope="col">수령인</th>
+										<th scope="col">주문총 금액</th>
+										<th scope="col">주문일</th>
+										<th scope="col">변경사항 등록일</th>
+										<th scope="col">내역</th>
+										<th scope="col">상세화면</th>
+										</tr>
+									</thead>
+									<tbody>
+										<c:forEach items="${orderHistoryList }" var="orderVO">
+										<tr>
+											<td>
+												<c:out value="${orderVO.order_code }" />
+											</td>
+											<td>
+												<c:out value="${orderVO.mbr_id }" />
+											</td>
+											<td>
+												<c:out value="${orderVO.order_mbr_nm }" />
+											</td>
+											<td>
+												<c:out value="${orderVO.order_tot_amt }" />
+											</td>
+											<td>
+												<fmt:formatDate value="${orderVO.order_date }" pattern="yyyy-MM-dd hh:mm" /> 
+											</td>
+											<td>
+												<fmt:formatDate value="${orderVO.order_event_date }" pattern="yyyy-MM-dd hh:mm" /> 
+											</td>
+											<td>
+												<c:out value="${orderVO.event_name }" />
+											</td>
+											<td><button type="button" name="btnOrderDetail" data-order_code="${orderVO.order_code}" class="btn btn-info">Detail</button></td>
+										</tr>
+										</c:forEach>
+										
+									</tbody>
+								</table>
+								<div class="col-md-7" style="float: none; margin:0 auto;">
+									<nav aria-label="...">
+										<ul class="pagination">
+											<!-- 이전표시 -->
+											<c:if test="${pageMaker.prev }">
+												<li class="page-item">
+												<a class="page-link" href="${pageMaker.startPage - 1 }">Previous</a>
+												</li>
+											</c:if>
+											
+											<!-- 페이지번호 표시.  1  2  3  4  5 -->
+											
+											<c:forEach begin="${pageMaker.startPage }" end="${pageMaker.endPage }" var="num" >
+												<li class='page-item ${pageMaker.cri.pageNum == num ? "active": "" }'><a class="page-link" href="${num}">${num}</a></li>
+											</c:forEach>
+											<!-- 
+											<li class="page-item active" aria-current="page">
+											<span class="page-link">2</span>
+											</li>
+											<li class="page-item"><a class="page-link" href="#">3</a></li>
+											-->
+											<!-- 다음표시 -->
+											<c:if test="${pageMaker.next }">
+												<li class="page-item">
+												<a class="page-link" href="${pageMaker.endPage + 1 }">Next</a>
+												</li>
+											</c:if>
+											
+										</ul>
+										<!--페이지 번호 클릭시 list주소로 보낼 파라미터 작업-->
+										<form id="actionForm" action="/admin/order/adminOrderList" method="get">
+											<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
+											<input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+											<input type="hidden" name="type" value="${pageMaker.cri.type}">
+											<input type="hidden" name="keyword" value="${pageMaker.cri.keyword}">
+											<input type="hidden" name="startDate" value="${startDate}">
+											<input type="hidden" name="endDate" value="${endDate}">
+										</form>
+									</nav>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -421,36 +451,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
     
     
 
-		//상품수정
-		$("button[name='btnProductEdit']").on("click", function(){
-			//$(this).data("gds_code"); 태그에 있는 data_gds_code의 값
+		//주문상세버튼 클릭
+		$("button[name='btnOrderDetail']").on("click", function(){
+			$(this).data("order_code : " + $(this).data("order_code")); 
 
 			//상품코드를 자식으로 추가
-			actionForm.append("<input type='hidden' name='gds_code' value='"+ $(this).data("gds_code") +"'>");
+			actionForm.append("<input type='hidden' name='order_code' value='"+ $(this).data("order_code") +"'>");
 
 			
 			actionForm.attr("method","get");			
-			actionForm.attr("action","/admin/product/adminProductModify");
+			actionForm.attr("action","/admin/order/adminOrderDetail");
 			actionForm.submit();
-
-		});
-		
-
-		
-		//주문상품 개별 취소
-		$("button[name='btnOrderCancel']").on("click", function(){
-			
-			if(!confirm("상품을 주문취소하겠습니까?")) return;
-			
-			let order_code = $(this).data("order_code");
-			let gds_code = $(this).data("gds_code");
-			let order_dtl_amt = $(this).data("order_dtl_amt");
-			
-			console.log("1order_code : " + order_code);
-			console.log("1gds_code : " + gds_code);
-			console.log("1order_dtl_amt : " + order_dtl_amt);
-			
-			location.href = "/admin/order/orderUnitProductCancel?order_code="+order_code+"&gds_code="+gds_code+"&order_dtl_amt="+order_dtl_amt;
 
 		});
 

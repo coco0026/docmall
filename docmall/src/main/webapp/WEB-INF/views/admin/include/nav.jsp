@@ -80,6 +80,7 @@
           </a>
           <ul class="treeview-menu">
             <li><a href="/admin/order/adminOrderList">주문목록</a></li>
+            <li><a href="/admin/order/adminOrderHistoryList">주문변경(삭제/수정)기록</a></li>
           </ul>
         </li>
         

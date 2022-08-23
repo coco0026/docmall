@@ -23,5 +23,8 @@ public class OrderVO {
 	private	String payment_process;  //결제프로세스
 	private	String cs_process;  //cs프로세스
 	
+	private	Date order_event_date; 
+	private	String event_name;
+	
 		
 }

@@ -148,8 +148,8 @@ public class AdminOrderController {
 	 * 주문상품 개별 취소
 	 * @return 주문상세화면
 	 */
-	@GetMapping("/orderUnitProductCancelCancel")
-	public String orderUnitProductCancelCancel(Long order_code, Integer gds_code, int order_dtl_amt, RedirectAttributes rttr) {
+	@GetMapping("/orderUnitProductCancel")
+	public String orderUnitProductCancel(Long order_code, Integer gds_code, int order_dtl_amt, RedirectAttributes rttr) {
 		
 		Service.orderUnitProductCancel(order_code, gds_code, order_dtl_amt);
 		
@@ -158,6 +158,28 @@ public class AdminOrderController {
 		return "redirect:/admin/order/adminOrderDetail";
 	}
 	
+	
+	@GetMapping("/adminOrderHistoryList")
+	public void adminOrderHistoryList(Criteria cri, @RequestParam(value = "startDate", required = false) String startDate, @RequestParam(value = "endDate", required = false) String endDate,  Model model) {
+		
+		List<OrderVO> orderHistoryList =  Service.getOrderHistory(cri, startDate, endDate);
+		log.info("orderHistoryList : " + orderHistoryList);
+		
+		model.addAttribute("orderHistoryList", orderHistoryList);
+		model.addAttribute("startDate", startDate);
+		model.addAttribute("endDate", endDate);
+		
+		// 배송상태프로세스 공통코드		
+		model.addAttribute("commonCode", commonCodeService.getSubCommonCodeTmp("B00"));
+		
+		//총 갯수
+		int total = Service.getOrderHistoryTotalCount(cri, startDate, endDate);
+		
+		//페이징
+		PageDTO pageDTO = new PageDTO(cri, total);
+		model.addAttribute("pageMaker", pageDTO);
+		
+	}
 	
 	
 	

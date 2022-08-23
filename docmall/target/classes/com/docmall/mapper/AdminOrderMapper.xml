@@ -95,7 +95,7 @@
 	</update>
 
 
-	<!-- 선택삭제 -->
+	<!-- 주문테이블 삭제 -->
 	<delete id="orderDel">
 		DELETE FROM ORDER_TBL
 		WHERE ORDER_CODE = #{order_code}
@@ -109,6 +109,18 @@
 			#{order_code}
 		</foreach>
 	</delete> -->
+	
+	<!-- 결제테이블 삭제 -->
+	<delete id="paymentDel">
+		DELETE FROM PAYMENT_TBL
+		WHERE ORDER_CODE = #{order_code}
+	</delete>
+	
+	<!-- 주문상세테이블 삭제 -->
+	<delete id="orderDetailDel">
+		DELETE FROM ORDER_DETAIL_TBL
+		WHERE ORDER_CODE = #{order_code}
+	</delete>
 	
 	
 	<!-- 주문정보 -->
@@ -180,9 +192,74 @@
 		WHERE ORDER_CODE = #{order_code}
 	</update>
 
+	<select id="getOrderDetailProductCount" resultType="int" parameterType="long">
+		SELECT COUNT(*) 
+		FROM ORDER_DETAIL_TBL
+		WHERE ORDER_CODE = #{order_code}
+	</select>
+	
+	
+	<!-- 주문변경 히스토리 테이블 -->
+	<select id="getOrderHistory"  parameterType="com.docmall.dto.Criteria" resultType="com.docmall.domain.OrderVO">
+		<![CDATA[
+		SELECT RN, 
+			   ORDER_CODE, 
+			   MBR_ID, 
+			   ORDER_MBR_NM, 
+			   ORDER_MBR_ZIP, 
+			   ORDER_MBR_ADDR, 
+			   ORDER_MBR_DADDR, 
+			   ORDER_MBR_TELNO, 
+			   ORDER_TOT_AMT, 
+			   ORDER_DATE, 
+			   ORDER_PROCESS, 
+			   ORDER_EVENT_DATE, 
+			   EVENT_NAME
+		FROM (
+		      SELECT  /*+ INDEX_DESC(ORDER_HISTORY_TBL PK_ORDER_CODE)*/ ROWNUM RN, 
+		           ORDER_CODE, 
+				   MBR_ID, 
+				   ORDER_MBR_NM, 
+				   ORDER_MBR_ZIP, 
+				   ORDER_MBR_ADDR, 
+				   ORDER_MBR_DADDR, 
+				   ORDER_MBR_TELNO, 
+				   ORDER_TOT_AMT, 
+				   ORDER_DATE, 
+				   ORDER_PROCESS, 
+				   ORDER_EVENT_DATE, 
+				   EVENT_NAME
+		      FROM ORDER_HISTORY_TBL
+		      WHERE                                   
+		]]>    
+			  <include refid="period"></include> 
+			  <include refid="criteria"></include> 
+		<![CDATA[ 
+			  ROWNUM <= #{cri.pageNum} * #{cri.amount}
+			  )
+			  	WHERE 
+			  	RN > (#{cri.pageNum}-1) * #{cri.amount}
+		]]>
+	</select>
+
+	<select id="getOrderHistoryTotalCount" parameterType="com.docmall.dto.Criteria" resultType="int">
+			SELECT COUNT(*) 
+			FROM ORDER_HISTORY_TBL 
+			WHERE
+			<include refid="period"></include> 
+			<include refid="criteria"></include> 
+			ORDER_CODE > 0
+	</select>
 
 
 
+
+
+
+
+
+
+	
 
 
 </mapper>

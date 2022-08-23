@@ -357,13 +357,13 @@ CREATE TABLE ORDER_DETAIL_TBL (
 );
 select * from ORDER_TBL;
 select * from ORDER_DETAIL_TBL;
+select * from PAYMENT_TBL;
 select * from CART_TBL;
-drop table ORDER_DETAIL_TBL;
+--drop table ORDER_DETAIL_TBL;
 --drop table ORDER_TBL;
-drop SEQUENCE SEQ_ORDER_CODE;
+--drop SEQUENCE SEQ_ORDER_CODE;
 create SEQUENCE SEQ_ORDER_CODE;
-
-
+ commit;
 
 
 --결제 테이블
@@ -451,6 +451,100 @@ CREATE TABLE MANAGER_TBL (
     MNGR_NM             VARCHAR2(30)            NOT NULL, --관리자
     MNGR_CNTN_DATE      DATE                    NOT NULL -- 최근 접속시간
 );
+--ORDER_CODE, MBR_ID, ORDER_MBR_NM, ORDER_MBR_ZIP, ORDER_MBR_ADDR, ORDER_MBR_DADDR, 
+--ORDER_MBR_TELNO, ORDER_TOT_AMT, ORDER_DATE, ORDER_PROCESS, PAYMENT_PROCESS, CS_PROCESS
+--주문테이블 기록
+CREATE TABLE ORDER_HISTORY_TBL(
+    ORDER_CODE          NUMBER                  PRIMARY KEY,       --주문번호                     
+    MBR_ID              VARCHAR2(50)            NOT NULL REFERENCES MEMBER_TBL(MBR_ID), --주문자아이디
+    ORDER_MBR_NM        VARCHAR2(30)            NOT NULL, --수령인
+    ORDER_MBR_ZIP       CHAR(5)                 NOT NULL, --수령인 우편번호
+    ORDER_MBR_ADDR      VARCHAR2(50)            NOT NULL, --수령인 기본주소
+    ORDER_MBR_DADDR     VARCHAR2(50)            NOT NULL, --수령인 상세주소
+    ORDER_MBR_TELNO     VARCHAR2(15)            NOT NULL, --수령인 연락처
+    ORDER_TOT_AMT       NUMBER                  NOT NULL, --주문 총 금액
+    ORDER_DATE          DATE DEFAULT SYSDATE    NOT NULL, --주문날짜
+    ORDER_PROCESS       VARCHAR2(50)            , --주문상태
+    ORDER_EVENT_DATE    DATE DEFAULT SYSDATE    NOT NULL, --변경사항 등록일
+    EVENT_NAME          VARCHAR2(50)            not null -- 종류 : 주문상품삭제/주문취소
+);
+select * from ORDER_HISTORY_TBL;
+-- 주문상세 기록
+CREATE TABLE ORDER_DETAIL_HISTORY_TBL(
+    ORDER_CODE          NUMBER              NOT NULL, --주문번호
+    GDS_CODE             NUMBER              NOT NULL, --상품번호
+    ORDER_DTL_CNT          NUMBER              NOT NULL, --상품수
+    ORDER_DTL_AMT           NUMBER              NOT NULL, --가격
+    CONSTRAINTS ORDER_DETAIL_HISTORY_PK PRIMARY KEY(ORDER_CODE, GDS_CODE)
+);
+select * from ORDER_DETAIL_HISTORY_TBL;
+
+--주문테이블에서 삭제(전체주문 취소) 
+--ORDER_TBL에서 DELETE 작업이 실행되고, 테이블에 반영이 된 이후 호출되는 트리거
+--임시테이블 : OLD - >삭제된 데이터 행이 저장
+CREATE OR REPLACE TRIGGER TRG_ORDER_HISTORY
+    AFTER DELETE 
+    ON ORDER_TBL
+    FOR EACH ROW
+DECLARE
+    v_EVENT_NAME VARCHAR2(50) := '주문취소';
+
+BEGIN
+    INSERT INTO ORDER_HISTORY_TBL(
+    ORDER_CODE, 
+    MBR_ID, 
+    ORDER_MBR_NM, 
+    ORDER_MBR_ZIP, 
+    ORDER_MBR_ADDR, 
+    ORDER_MBR_DADDR, 
+    ORDER_MBR_TELNO, 
+    ORDER_TOT_AMT,
+    ORDER_DATE, 
+    ORDER_PROCESS, 
+    ORDER_EVENT_DATE, 
+    EVENT_NAME
+    )VALUES(
+    :OLD.ORDER_CODE, 
+    :OLD.MBR_ID, 
+    :OLD.ORDER_MBR_NM, 
+    :OLD.ORDER_MBR_ZIP, 
+    :OLD.ORDER_MBR_ADDR, 
+    :OLD.ORDER_MBR_DADDR,
+    :OLD.ORDER_MBR_TELNO,
+    :OLD.ORDER_TOT_AMT,
+    :OLD.ORDER_DATE,
+    :OLD.ORDER_PROCESS,
+    SYSDATE,
+    v_EVENT_NAME
+    );
+    
+    -- 스프링에서 처리 권장
+    --주문상세테이블 삭제
+    --결제테이블삭제
+END;
+
+
+--주문상세테이블 주문상품 개별삭제
+CREATE OR REPLACE TRIGGER TRG_ORDER_DETAIL_HISTORY
+    AFTER DELETE
+    ON ORDER_DETAIL_TBL
+    FOR EACH ROW -- 테이블의 작업한 행수만큼 트리거 동작
+BEGIN
+    INSERT INTO ORDER_DETAIL_HISTORY_TBL(
+    ORDER_CODE, 
+    GDS_CODE,
+    ORDER_DTL_CNT, 
+    ORDER_DTL_AMT
+    )VALUES(
+    :OLD.ORDER_CODE, 
+    :OLD.GDS_CODE,
+    :OLD.ORDER_DTL_CNT, 
+    :OLD.ORDER_DTL_AMT
+    );
+END;
+
+
+
 
 INSERT INTO MANAGER_TBL(MNGR_ID,MNGR_PW,MNGR_NM,MNGR_CNTN_DATE)
 VALUES('admin','$2a$10$lMX0lTdK2dAxpIR8B3KVQepSjirIkne0l79JDQfMJHUNkazSOivp.','관리자',sysdate);
@@ -463,20 +557,6 @@ commit;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
---회원 테이블, 회원상세 테이블 생성 프로시저
 create or replace PROCEDURE P_MEMBER_ADD (
     P_MBR_ID           IN MEMBER_TBL.MBR_ID%TYPE,
     P_MBR_NM           IN MEMBER_TBL.MBR_NM%TYPE,
@@ -497,7 +577,7 @@ create or replace PROCEDURE P_MEMBER_ADD (
     -- Ver      Date              Author
     -- 1.0      2022/07/12        이영수
     -------------------------------------
-    
+
     INSERT_ERR EXCEPTION;
 
     V_MBR_POINT_NY       NUMBER     := 0;       -- 적립금
@@ -512,7 +592,7 @@ create or replace PROCEDURE P_MEMBER_ADD (
             P_ERRCODE := 'N'; -- 에러코드값 디폴트N
             P_ERRMSG := 'SUCCESS'; --   에러메시지 값 디폴트 SUCCESS
 
-       
+
             -- 회원테이블 INSERT
             INSERT INTO MEMBER_TBL (
                 MBR_ID,           
@@ -550,7 +630,7 @@ create or replace PROCEDURE P_MEMBER_ADD (
             ) VALUES (
                 P_MBR_ID,
                 V_MBR_POINT_NY, -- 적립금
-                V_MBR_GRADE_CODE,-- A01 : 일반회원3% , A02 : 실버5% , A03 : 골드7% , A04 다이아10%
+                V_MBR_GRADE_CODE,-- 1001 : 일반회원3% , 1002 : 실버5% , 1003 : 골드7% , 1004 다이아10%
                 V_MBR_ACCUMULATE_MY -- 회원 주문 누적 금액 
             );
 
@@ -576,7 +656,6 @@ create or replace PROCEDURE P_MEMBER_ADD (
       P_ERRMSG  := '그 외 오류 발생' || SQLCODE || SUBSTR( SQLERRM, 1, 200 );
        RETURN;
 END P_MEMBER_ADD;
-
 
  call P_MEMBER_ADD( 'test', '테스트', '$2a$10$lMX0lTdK2dAxpIR8B3KVQepSjirIkne0l79JDQfMJHUNkazSOivp.', 
 '11900', '경기 구리시 담터길32번길 111', '이젠빌딩', '010-1234-1234', 'coco0026@naver.com', 'Y', '', 

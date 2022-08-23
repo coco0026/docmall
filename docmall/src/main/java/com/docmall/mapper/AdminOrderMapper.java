@@ -18,11 +18,17 @@ public interface AdminOrderMapper {
 	
 	void orderProcessChange(@Param("order_code") Long order_code, @Param("order_process") String order_process);
 	
-	/* 선택삭제 */
+	/* 주문테이블 삭제 */
 	void orderDel(Long order_code);
 	
 	/* 선택삭제 db where in처리 */
 	/* void orderDel(List<Long> orderCodeArr); */
+	
+	/* 결제테이블 삭제 */
+	void paymentDel(Long order_code);
+	
+	//주문상세테이블 삭제
+	void orderDetailDel(Long order_code);
 	
 	//주문정보
 	OrderVO getOrderInfo(Long order_code);
@@ -48,5 +54,23 @@ public interface AdminOrderMapper {
 	
 	
 	
+	/**
+	 * 주문 상세테이블의 데이터 수 확인
+	 */
+	int getOrderDetailProductCount(Long order_code);
 	
-}
+	
+	//주문변경 히스토리
+	List<OrderVO> getOrderHistory(@Param("cri") Criteria cri, @Param("startDate") String startDate, @Param("endDate") String endDate);
+	int getOrderHistoryTotalCount(@Param("cri") Criteria cri, @Param("startDate") String startDate, @Param("endDate") String endDate);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}	

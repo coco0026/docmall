@@ -35,5 +35,8 @@ public interface AdminOrderService {
 	
 	
 	
-
+	//주문변경 히스토리
+	List<OrderVO> getOrderHistory(Criteria cri, String startDate, String endDate);
+	int getOrderHistoryTotalCount(Criteria cri, String startDate, String endDate);
+	
 }

@@ -284,7 +284,9 @@
 
 				actionForm.attr("method","get");
 				actionForm.attr("action","/user/product/productDetail");
-
+				
+				actionForm.find("input[name='gds_code']").remove();
+				
 				actionForm.append("<input type='hidden' name='gds_code' value='"+gds_code+"'>");
 				actionForm.submit();
 
