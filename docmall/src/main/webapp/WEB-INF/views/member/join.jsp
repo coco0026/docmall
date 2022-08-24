@@ -226,7 +226,7 @@
 				
 
 				//아이디 중복 체크 사용여부.
-				/* if(!isIdCheck){
+				if(!isIdCheck){
 					alert("아이디 중복확인을 해주세요")
 					return;
 
@@ -261,10 +261,10 @@
 				if(pw != pw_chck){
 					alert("비밀번호 확인이 일치하지 않습니다.");
 					return;
-				}  */
+				}  
 				//비밀번호 유효성 검사 End--------------------------------------
 				
-				/* let mbrNm = $("#mbr_nm").val();
+				 let mbrNm = $("#mbr_nm").val();
 				//이름 입력 확인
 				if(mbrNm == "") {
 					alert("이름을 입력하세요");
@@ -275,14 +275,15 @@
 				
 				//메일 인증 확인 여부
 				if(!isAuthCode){
-					alert("메일 인증확인을 해주세요")
+					alert("메일 인증확인을 해주세요");
 					return;
 					
-				}  */
+				} 
 				
 				
 				//////////주소 유효성검사 수정 해야함
-				//휴대폰번호 이메일 유효성검사 작업해야함
+				
+
 				
 				
 				//휴대폰번호 중복 체크
@@ -400,6 +401,18 @@
 				
 				if($("#mbr_eml_addr").val() == ""){
 					alert("메일주소를 입력하세요.");
+					$("#mbr_eml_addr").focus();
+					return;
+				}
+				
+				
+				
+				let mbrEmlAddr = $("#mbr_eml_addr").val();
+				let exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+				//메일 유효성 검사
+				if(mbrEmlAddr.search(exptext) < 0 ){
+					alert("이메일형식이 올바르지 않습니다.");
+					$("#mbr_eml_addr").focus();
 					return;
 				}
 									

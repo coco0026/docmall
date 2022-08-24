@@ -248,6 +248,10 @@
 					url : '/user/cart/cart_add',
 					data : {gds_code : $("div#modalProductDetail input#gds_code").val() , cart_prchs_cnt :$("div#modalProductDetail input#cart_prchs_cnt").val()},
 					dataType : 'text',
+					beforeSend : function(xmlHttpRequest) {
+			            console.log("ajax xmlHttpRequest check");
+			            xmlHttpRequest.setRequsetHeadr("AJAX", "true");
+			      	},
 					success : function(result){
 						if(result = "success"){
 							alert("장바구니에 추가되었습니다.");
@@ -256,6 +260,15 @@
 							}
 
 						}
+					},
+					error : function(xhr, status, error){
+							location.href = "/member/login";
+						
+						/* 
+						if(status == 400){
+							console.log(status);
+							location.href = "/member/login";
+						} */
 					}
 				});
 				

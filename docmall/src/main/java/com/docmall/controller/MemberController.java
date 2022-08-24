@@ -207,6 +207,14 @@ public class MemberController {
 				//1)비번이 일치되는경우
 				url ="/"; //main화면
 				session.setAttribute("loginStatus", loginVo); //인증성공시 서버측에 세션을 통한 정보 저장.
+				
+				String dest = (String)session.getAttribute("dest"); //LoginInterceptor preHandle()메서드에서 세션 형대로 저장
+				log.info("dest :  " + dest);
+				url = (dest != null)? dest : "/";
+				
+				
+				
+				
 				service.login_date(loginVo.getMbr_id()); //로그인 성공시 로그인 시간 UPDATE
 				msg = "loginSuccess";
 				log.info("로그인성공");
