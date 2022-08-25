@@ -253,7 +253,7 @@
 			            xmlHttpRequest.setRequsetHeadr("AJAX", "true");
 			      	},
 					success : function(result){
-						if(result = "success"){
+						if(result == "success"){
 							alert("장바구니에 추가되었습니다.");
 							if(confirm("장바구니로 이동하시겠습니까?")){
 								location.href = "/user/cart/cart_list";
@@ -262,13 +262,12 @@
 						}
 					},
 					error : function(xhr, status, error){
-							location.href = "/member/login";
 						
-						/* 
-						if(status == 400){
+						if(xhr.status == 400){
 							console.log(status);
 							location.href = "/member/login";
-						} */
+						} 
+						
 					}
 				});
 				

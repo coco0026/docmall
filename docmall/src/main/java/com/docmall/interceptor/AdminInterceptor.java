@@ -2,17 +2,97 @@ package com.docmall.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.docmall.domain.AdminVO;
+import com.docmall.domain.MemberVO;
 
 public class AdminInterceptor extends HandlerInterceptorAdapter {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+
+		boolean result = false;
+		
+		//인증된 사용자인지 여부를 체크. 세션객체를 확인.
+		HttpSession session = request.getSession();
+		AdminVO admin =  (AdminVO)session.getAttribute("adminStatus");
+		
+		System.out.println("admin : " + admin);
+		System.out.println("session : " + session);
+		
+		if(admin == null) { //인증정보 존재하지 않음. 비로그인
+			result = false;
+			
+			if(isAjaxRequest(request)) {
+				response.sendError(400); //ajax요청시 400에러 리턴
+			}else {
+				getDestination(request);///요청한 주소 저장
+				response.sendRedirect("/admin/");
+				
+				String uri = request.getRequestURI();
+				if(uri.equals("/admin/adminOK")) {
+					return true;
+				}
+				response.sendRedirect("/admin/");
+			}
+			
+		}else { //인증정보 존재. 로그인
+			result = true;
+		}
+		
+		return result; // true면, 다음진행은 컨트롤러로 제어가 넘어간다.
+	}
+	
+	/**
+	 * 
+	 * @param request 요청한 주소
+	 */
+	private void getDestination(HttpServletRequest request) {
 		// TODO Auto-generated method stub
-		return super.preHandle(request, response, handler);
+		
+											   ///product/cart?gds_code=10
+		String uri = request.getRequestURI(); // 브라우저가 요청한 주소. /product/cart
+		String query = request.getQueryString(); // 파라메터값.   gds_code=10
+		
+		
+		if(query == null || query.equals("null")) {
+			query = "";
+		}else {
+			query = "?" + query;
+		}
+		
+		String destination = uri + query;
+		
+		
+		if(request.getMethod().equals("GET")) {
+			// 사용자가 비로그인 상태에서 요청한 원래 주소를 세션으로 저장
+			request.getSession().setAttribute("dest", destination);
+		}
+		
+	}
+	
+	/**
+	 * ajax요청을 체크
+	 * @param request 요청한 주소
+	 * @return
+	 */
+	private boolean isAjaxRequest(HttpServletRequest request) {
+		// TODO Auto-generated method stub
+		
+		boolean isAjax = false;
+		
+		// ajax구문에서 요청시 헤더에 AJAX : "true"를 작업해두어야 한다.
+		String header = request.getHeader("AJAX");
+		if("true".equals(header)) {
+			isAjax = true;
+		}
+		
+		return isAjax;
 	}
 
 	@Override

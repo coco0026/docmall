@@ -72,21 +72,31 @@ public class AdminController {
 			/* 사용자가 입력한 비밀번호와 db의 암호화된 비밀번호 비교 */
 			if(bCryptPasswordEncoder.matches(pw, db_pw)) {
 				//1)비밀번호일치
-				url="/admin/adminMain";//완료후 경로
-				session.setAttribute("loginStatus", loginVo);//세션 정보 저장.
+				url="";//완료후 경로
+				session.setAttribute("adminStatus", loginVo);//세션 정보 저장.
+				
+				
+				
+				String dest = (String)session.getAttribute("dest"); //LoginInterceptor preHandle()메서드에서 세션 형대로 저장
+				
+				System.out.println("dest : " + dest);
+
+				url = (dest != null)? dest : "/admin/";
+				
 				service.login_date(loginVo.getMngr_id()); //로그인 시간 업데이트
+				
 				msg = "loginSuceess";
 				log.info("로그인성공");
 			}else {
 				//2)비밀번호다름
-				url = "/admin";
+				url = "/admin/";
 				msg = "passwdFail";
 				log.info("비번다름");
 			}
 			
 		}else {
 			//3)아이디 없음
-			url = "/admin";
+			url = "/admin/";
 			msg = "idFail";
 			log.info("아디다름");
 		}

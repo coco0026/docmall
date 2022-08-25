@@ -42,7 +42,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			result = true;
 		}
 		
-		log.info("result : " + result);
 		return result; // true면, 다음진행은 컨트롤러로 제어가 넘어간다.
 	}
 

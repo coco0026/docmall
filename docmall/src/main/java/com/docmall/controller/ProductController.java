@@ -142,25 +142,6 @@ public class ProductController {
 	}
 	
 	
-	//장바구니 담기
-	@ResponseBody
-	@GetMapping("/cart_add")
-	public ResponseEntity<String> cart_add(CartVO vo, HttpSession session) {
-		
-		ResponseEntity<String> entity = null;
-		
-		log.info("장바구니 : " + vo);
-		
-		//세션 정보
-		String mbr_id = ((MemberVO) session.getAttribute("loginStatus")).getMbr_id();
-		vo.setMbr_id(mbr_id);
-		
-		cartService.cart_add(vo);
-		entity = new ResponseEntity<String>("success", HttpStatus.OK);
-		
-		return entity;
-		
-	}
 	
 	
 	
