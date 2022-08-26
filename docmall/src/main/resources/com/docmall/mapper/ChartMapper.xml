@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.docmall.mapper.ChartMapper">
+
+	<select id="primaryChart" resultType="com.docmall.domain.ChartVO">
+		SELECT COMMON_CODE_NM AS primary_cd, 
+        	   SUM(c.order_dtl_amt) AS sales_p
+		FROM  COMMON_CODE_TBL A, 
+		      GOODS_TBL B, 
+		      ORDER_DETAIL_TBL C
+		WHERE COMMON_CODE like 'C%' AND
+		      B.CATE_CODE = A.COMMON_CODE AND
+		      B.GDS_CODE = C.GDS_CODE
+		GROUP BY A.COMMON_CODE_NM
+		ORDER BY A.COMMON_CODE_NM
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+</mapper>

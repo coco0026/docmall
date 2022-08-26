@@ -20,7 +20,7 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
 		
 		//인증된 사용자인지 여부를 체크. 세션객체를 확인.
 		HttpSession session = request.getSession();
-		AdminVO admin =  (AdminVO)session.getAttribute("adminStatus");
+		AdminVO admin =  (AdminVO)session.getAttribute("loginStatus");
 		
 		System.out.println("admin : " + admin);
 		System.out.println("session : " + session);
@@ -32,10 +32,10 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
 				response.sendError(400); //ajax요청시 400에러 리턴
 			}else {
 				getDestination(request);///요청한 주소 저장
-				response.sendRedirect("/admin/");
-				
 				String uri = request.getRequestURI();
-				if(uri.equals("/admin/adminOK")) {
+				System.out.println(uri);
+				if(uri.equals("/admin/adminLogin")) {
+					System.out.println("3333333333");
 					return true;
 				}
 				response.sendRedirect("/admin/");

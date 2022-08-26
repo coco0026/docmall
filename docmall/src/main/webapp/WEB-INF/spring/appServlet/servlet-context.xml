@@ -76,9 +76,11 @@
 		</interceptor>
 		
 		<!-- 관리자실정 -->
+		
 		<interceptor>
-			<mapping path="/admin/**" /> <!-- 인터셉터를 받을 매핑주소 -->
+			<mapping path="/admin/**" /> 
 			<exclude-mapping path="/admin/" />
+			<exclude-mapping path="/admin/adminLogin" />
 			<beans:ref bean="adminInterceptor" />
 		</interceptor>
 		
