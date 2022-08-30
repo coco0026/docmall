@@ -110,6 +110,7 @@
 							</div>
 						</div>
 						<div class="box-footer text-right">
+							<input type="hidden" id="mbr_id" name="mbr_id" value="${loginStatus.mbr_id}">
 							<button type="button" name="btnCartAllDel" class="btn btn-info">장바구니 비우기</button>
 							<button type="button" name="btnProductList" class="btn btn-info">계속 쇼핑하기</button>
 							<button type="button" name="btnOrder" class="btn btn-info">주문하기</button>
@@ -192,6 +193,8 @@
 
 
 				location.href = "/user/cart/cartDelete?cart_code="+cart_code;
+				
+				
 			});
 			
 			
@@ -209,7 +212,28 @@
 				
 				let type = "cartOrder";
 				
-				location.href = "/user/order/orderListInfo?type=" + type;
+				
+				$.ajax({
+					url: '/user/order/orderCheck',
+					type: "get",
+					dataType: 'text',
+					data:{ mbr_id : $("#mbr_id").val()},
+					success : function(result){
+						
+						
+						if(result == "no"){
+							alert("등록된 상품이 없습니다.");
+							return;
+						}
+						
+						
+						location.href = "/user/order/orderListInfo?type=" + type;
+
+					}
+				})
+				
+				
+				
 
 			});
 			

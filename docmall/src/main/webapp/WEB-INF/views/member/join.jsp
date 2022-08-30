@@ -288,7 +288,7 @@
 				
 				//휴대폰번호 중복 체크
 				if(!isTelNumCheck){
-					alert("휴대폰번호 확인을 해주세요")
+					alert("휴대폰번호 확인을 해주세요");
 					$("#mbr_telno").focus();
 					return;
 				}
